@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { Textarea } from "@/components/ui/textarea"
 import { useRouter } from "next/navigation"
 import HeaderWithMenu from "@/components/header-with-menu"
 import MobileNavigation from "@/components/mobile-navigation"
@@ -15,6 +16,14 @@ export default function SurveyPage() {
   const router = useRouter()
   const [showThankYou, setShowThankYou] = useState(false)
   const [surveyAnswers, setSurveyAnswers] = useState({
+    convenience: "",
+    smoothness: "",
+    clarity: "",
+    satisfaction: "",
+    recommendation: "",
+  })
+
+  const [feedbackComments, setFeedbackComments] = useState({
     convenience: "",
     smoothness: "",
     clarity: "",
@@ -33,7 +42,13 @@ export default function SurveyPage() {
       return
     }
 
-    console.log("[v0] Survey submitted:", surveyAnswers)
+    // 準備完整的調查資料
+    const surveyData = {
+      answers: surveyAnswers,
+      comments: feedbackComments,
+    }
+    
+    console.log("[v0] Survey submitted:", surveyData)
     setShowThankYou(true)
 
     // Redirect after showing thank you message
@@ -47,6 +62,26 @@ export default function SurveyPage() {
       ...prev,
       [question]: value,
     }))
+    
+    // 如果評分改變為4或5，清空對應的意見欄位
+    if (parseInt(value) > 3) {
+      setFeedbackComments((prev) => ({
+        ...prev,
+        [question]: "",
+      }))
+    }
+  }
+
+  const handleCommentChange = (question: string, value: string) => {
+    setFeedbackComments((prev) => ({
+      ...prev,
+      [question]: value,
+    }))
+  }
+
+  const shouldShowCommentInput = (question: string) => {
+    const rating = parseInt(surveyAnswers[question as keyof typeof surveyAnswers])
+    return rating >= 1 && rating <= 3
   }
 
   if (showThankYou) {
@@ -120,6 +155,21 @@ export default function SurveyPage() {
                       </Label>
                     </div>
                   </RadioGroup>
+                  
+                  {/* 條件意見輸入 */}
+                  {shouldShowCommentInput("convenience") && (
+                    <div className="mt-4 space-y-2">
+                      <Label className="text-sm text-muted-foreground">
+                        請分享您的意見或改善建議：
+                      </Label>
+                      <Textarea
+                        placeholder="請告訴我們您認為哪些地方需要改進..."
+                        value={feedbackComments.convenience}
+                        onChange={(e) => handleCommentChange("convenience", e.target.value)}
+                        className="min-h-[80px] resize-none"
+                      />
+                    </div>
+                  )}
                 </div>
               </CardContent>
             </Card>
@@ -164,6 +214,21 @@ export default function SurveyPage() {
                       </Label>
                     </div>
                   </RadioGroup>
+                  
+                  {/* 條件意見輸入 */}
+                  {shouldShowCommentInput("smoothness") && (
+                    <div className="mt-4 space-y-2">
+                      <Label className="text-sm text-muted-foreground">
+                        請分享您的意見或改善建議：
+                      </Label>
+                      <Textarea
+                        placeholder="請告訴我們您認為哪些地方需要改進..."
+                        value={feedbackComments.smoothness}
+                        onChange={(e) => handleCommentChange("smoothness", e.target.value)}
+                        className="min-h-[80px] resize-none"
+                      />
+                    </div>
+                  )}
                 </div>
               </CardContent>
             </Card>
@@ -208,6 +273,21 @@ export default function SurveyPage() {
                       </Label>
                     </div>
                   </RadioGroup>
+                  
+                  {/* 條件意見輸入 */}
+                  {shouldShowCommentInput("clarity") && (
+                    <div className="mt-4 space-y-2">
+                      <Label className="text-sm text-muted-foreground">
+                        請分享您的意見或改善建議：
+                      </Label>
+                      <Textarea
+                        placeholder="請告訴我們您認為哪些地方需要改進..."
+                        value={feedbackComments.clarity}
+                        onChange={(e) => handleCommentChange("clarity", e.target.value)}
+                        className="min-h-[80px] resize-none"
+                      />
+                    </div>
+                  )}
                 </div>
               </CardContent>
             </Card>
@@ -252,6 +332,21 @@ export default function SurveyPage() {
                       </Label>
                     </div>
                   </RadioGroup>
+                  
+                  {/* 條件意見輸入 */}
+                  {shouldShowCommentInput("satisfaction") && (
+                    <div className="mt-4 space-y-2">
+                      <Label className="text-sm text-muted-foreground">
+                        請分享您的意見或改善建議：
+                      </Label>
+                      <Textarea
+                        placeholder="請告訴我們您認為哪些地方需要改進..."
+                        value={feedbackComments.satisfaction}
+                        onChange={(e) => handleCommentChange("satisfaction", e.target.value)}
+                        className="min-h-[80px] resize-none"
+                      />
+                    </div>
+                  )}
                 </div>
               </CardContent>
             </Card>
@@ -296,6 +391,21 @@ export default function SurveyPage() {
                       </Label>
                     </div>
                   </RadioGroup>
+                  
+                  {/* 條件意見輸入 */}
+                  {shouldShowCommentInput("recommendation") && (
+                    <div className="mt-4 space-y-2">
+                      <Label className="text-sm text-muted-foreground">
+                        請分享您的意見或改善建議：
+                      </Label>
+                      <Textarea
+                        placeholder="請告訴我們您認為哪些地方需要改進..."
+                        value={feedbackComments.recommendation}
+                        onChange={(e) => handleCommentChange("recommendation", e.target.value)}
+                        className="min-h-[80px] resize-none"
+                      />
+                    </div>
+                  )}
                 </div>
               </CardContent>
             </Card>
