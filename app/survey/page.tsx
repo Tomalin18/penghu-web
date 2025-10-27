@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { Textarea } from "@/components/ui/textarea"
 import { useRouter } from "next/navigation"
 import HeaderWithMenu from "@/components/header-with-menu"
 import MobileNavigation from "@/components/mobile-navigation"
@@ -162,11 +161,12 @@ export default function SurveyPage() {
                       <Label className="text-sm text-muted-foreground">
                         請分享您的意見或改善建議：
                       </Label>
-                      <Textarea
+                      <textarea
                         placeholder="請告訴我們您認為哪些地方需要改進..."
                         value={feedbackComments.convenience}
                         onChange={(e) => handleCommentChange("convenience", e.target.value)}
-                        className="min-h-[80px] resize-none"
+                        className="w-full min-h-[80px] px-3 py-2 border border-border rounded-md bg-background text-foreground text-sm resize-none focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
+                        rows={3}
                       />
                     </div>
                   )}
@@ -221,11 +221,12 @@ export default function SurveyPage() {
                       <Label className="text-sm text-muted-foreground">
                         請分享您的意見或改善建議：
                       </Label>
-                      <Textarea
+                      <textarea
                         placeholder="請告訴我們您認為哪些地方需要改進..."
                         value={feedbackComments.smoothness}
                         onChange={(e) => handleCommentChange("smoothness", e.target.value)}
-                        className="min-h-[80px] resize-none"
+                        className="w-full min-h-[80px] px-3 py-2 border border-border rounded-md bg-background text-foreground text-sm resize-none focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
+                        rows={3}
                       />
                     </div>
                   )}
@@ -280,11 +281,12 @@ export default function SurveyPage() {
                       <Label className="text-sm text-muted-foreground">
                         請分享您的意見或改善建議：
                       </Label>
-                      <Textarea
+                      <textarea
                         placeholder="請告訴我們您認為哪些地方需要改進..."
                         value={feedbackComments.clarity}
                         onChange={(e) => handleCommentChange("clarity", e.target.value)}
-                        className="min-h-[80px] resize-none"
+                        className="w-full min-h-[80px] px-3 py-2 border border-border rounded-md bg-background text-foreground text-sm resize-none focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
+                        rows={3}
                       />
                     </div>
                   )}
@@ -339,11 +341,12 @@ export default function SurveyPage() {
                       <Label className="text-sm text-muted-foreground">
                         請分享您的意見或改善建議：
                       </Label>
-                      <Textarea
+                      <textarea
                         placeholder="請告訴我們您認為哪些地方需要改進..."
                         value={feedbackComments.satisfaction}
                         onChange={(e) => handleCommentChange("satisfaction", e.target.value)}
-                        className="min-h-[80px] resize-none"
+                        className="w-full min-h-[80px] px-3 py-2 border border-border rounded-md bg-background text-foreground text-sm resize-none focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
+                        rows={3}
                       />
                     </div>
                   )}
@@ -398,11 +401,12 @@ export default function SurveyPage() {
                       <Label className="text-sm text-muted-foreground">
                         請分享您的意見或改善建議：
                       </Label>
-                      <Textarea
+                      <textarea
                         placeholder="請告訴我們您認為哪些地方需要改進..."
                         value={feedbackComments.recommendation}
                         onChange={(e) => handleCommentChange("recommendation", e.target.value)}
-                        className="min-h-[80px] resize-none"
+                        className="w-full min-h-[80px] px-3 py-2 border border-border rounded-md bg-background text-foreground text-sm resize-none focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
+                        rows={3}
                       />
                     </div>
                   )}
