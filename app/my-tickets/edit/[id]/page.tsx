@@ -725,6 +725,7 @@ export default function WebEditReservationPage() {
           </div>
         </div>
       </div>
+      </div>
 
       {/* Bottom Button - Sticky */}
       <div className="sticky bottom-0 z-40 bg-background/95 backdrop-blur-sm border-t">
