@@ -9,7 +9,6 @@ import { Label } from "@/components/ui/label"
 import { Checkbox } from "@/components/ui/checkbox"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { DesktopNavigation } from "@/components/desktop-navigation"
 import { useIsMobile } from "@/hooks/use-mobile"
 import Link from "next/link"
 import { useRouter, useParams, useSearchParams } from "next/navigation"
@@ -415,8 +414,6 @@ export default function WebEditReservationPage() {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      <DesktopNavigation activeTab="my-tickets" />
-      
       <header className="bg-primary px-4 sm:px-6 lg:px-8 py-4">
         <div className="max-w-6xl mx-auto flex items-center">
           <Link href="/web/my-tickets" className="text-primary-foreground">

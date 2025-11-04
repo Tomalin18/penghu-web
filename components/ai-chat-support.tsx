@@ -904,7 +904,8 @@ function RouteQueryCard({ language = "zh-TW" }: { language?: string }) {
   const t = cardTranslations[language as keyof typeof cardTranslations]?.route || cardTranslations["zh-TW"].route
 
   const handlePlanRoute = () => {
-    router.push("/schedule")
+    // 時刻表頁面已移除
+    console.log("[v0] Route planning - schedule page removed")
   }
 
   return (
@@ -956,15 +957,18 @@ function ScheduleQueryCard({ language = "zh-TW" }: { language?: string }) {
   const t = cardTranslations[language as keyof typeof cardTranslations]?.schedule || cardTranslations["zh-TW"].schedule
 
   const handleQuerySchedule = () => {
-    router.push("/schedule")
+    // 時刻表頁面已移除
+    console.log("[v0] Schedule query - schedule page removed")
   }
 
   const handleViewTimetable = () => {
-    router.push("/schedule")
+    // 時刻表頁面已移除
+    console.log("[v0] View timetable - schedule page removed")
   }
 
   const handleNearestStop = () => {
-    router.push("/schedule")
+    // 時刻表頁面已移除
+    console.log("[v0] Nearest stop - schedule page removed")
   }
 
   return (
@@ -1039,7 +1043,8 @@ function AttractionsCard({ language = "zh-TW" }: { language?: string }) {
     cardTranslations[language as keyof typeof cardTranslations]?.attractions || cardTranslations["zh-TW"].attractions
 
   const handleViewDetails = () => {
-    router.push("/attractions")
+    // 景點頁面已移除
+    console.log("[v0] View details - attractions page removed")
   }
 
   const handleBusinessHours = () => {
@@ -1047,11 +1052,13 @@ function AttractionsCard({ language = "zh-TW" }: { language?: string }) {
   }
 
   const handleFixedTours = () => {
-    router.push("/attractions")
+    // 景點頁面已移除
+    console.log("[v0] Fixed tours - attractions page removed")
   }
 
   const handleRandomRecommendation = () => {
-    router.push("/attractions")
+    // 景點頁面已移除
+    console.log("[v0] Random recommendation - attractions page removed")
   }
 
   return (

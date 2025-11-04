@@ -22,7 +22,6 @@ export function DesktopNavigation({ activeTab = "home" }: DesktopNavigationProps
     { id: "my-tickets", label: "我的車票", icon: Ticket, href: "/my-tickets" },
     { id: "purchase", label: "購票", icon: CreditCard, href: "/purchase/tickets" },
     { id: "reservation", label: "有票劃位", icon: Calendar, href: "/reservation" },
-    { id: "support", label: "客服", icon: MessageCircle, href: "/support" },
   ]
 
   const handleNavigation = (href: string) => {

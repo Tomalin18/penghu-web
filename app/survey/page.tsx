@@ -9,7 +9,6 @@ import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { useRouter } from "next/navigation"
-import { DesktopNavigation } from "@/components/desktop-navigation"
 import Link from "next/link"
 
 export default function WebSurveyPage() {
@@ -95,7 +94,6 @@ export default function WebSurveyPage() {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      <DesktopNavigation activeTab="purchase" />
       
       <header className="bg-primary px-4 sm:px-6 lg:px-8 py-4">
         <div className="max-w-6xl mx-auto flex items-center">

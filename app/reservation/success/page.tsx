@@ -5,7 +5,6 @@ import { CheckCircle, Download, MapPin, Calendar } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { DesktopNavigation } from "@/components/desktop-navigation"
 import { MobileNavigation } from "@/components/mobile-navigation"
 import { useRouter } from "next/navigation"
 import { useIsMobile } from "@/hooks/use-mobile"
@@ -131,7 +130,6 @@ export default function WebReservationSuccessPage() {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      {!isMobile && <DesktopNavigation activeTab="reservation" />}
       
       <header className="bg-primary px-4 sm:px-6 lg:px-8 py-4">
         <div className="max-w-6xl mx-auto">

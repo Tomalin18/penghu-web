@@ -4,6 +4,7 @@ import { Inter } from "next/font/google"
 import { Suspense } from "react"
 import "./globals.css"
 import { FavoritesProvider } from "@/contexts/favorites-context"
+import { HeaderWithMenu } from "@/components/header-with-menu"
 
 const inter = Inter({
   subsets: ["latin"],
@@ -26,6 +27,7 @@ export default function RootLayout({
       <body className={`font-sans ${inter.variable} antialiased`}>
         <Suspense fallback={<div>Loading...</div>}>
           <FavoritesProvider>
+            <HeaderWithMenu />
             <div className="min-h-screen bg-background">{children}</div>
           </FavoritesProvider>
         </Suspense>
