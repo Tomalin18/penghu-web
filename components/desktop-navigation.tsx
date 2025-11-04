@@ -19,9 +19,9 @@ export function DesktopNavigation({ activeTab = "home" }: DesktopNavigationProps
 
   const navItems = [
     { id: "home", label: "首頁", icon: Home, href: "/" },
-    { id: "my-tickets", label: "我的車票", icon: Ticket, href: "/web/my-tickets" },
-    { id: "purchase", label: "購票", icon: CreditCard, href: "/web/purchase/tickets" },
-    { id: "reservation", label: "有票劃位", icon: Calendar, href: "/web/reservation" },
+    { id: "my-tickets", label: "我的車票", icon: Ticket, href: "/my-tickets" },
+    { id: "purchase", label: "購票", icon: CreditCard, href: "/purchase/tickets" },
+    { id: "reservation", label: "有票劃位", icon: Calendar, href: "/reservation" },
     { id: "support", label: "客服", icon: MessageCircle, href: "/support" },
   ]
 

@@ -27,10 +27,14 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Drawer, DrawerContent, DrawerFooter, DrawerHeader, DrawerTitle } from "@/components/ui/drawer"
 import { TicketTypeSelector } from "@/components/ticket-type-selector"
+import { DesktopNavigation } from "@/components/desktop-navigation"
+import { MobileNavigation } from "@/components/mobile-navigation"
+import { useIsMobile } from "@/hooks/use-mobile"
 import { useRouter } from "next/navigation"
 import { useState, useEffect } from "react"
 import Image from "next/image"
 import { attractions } from "@/data/attractions"
+import Link from "next/link"
 
 interface TicketDetail {
   id: string
@@ -44,9 +48,10 @@ interface TicketDetail {
   usageRestrictions: string[]
 }
 
-export default function TicketDetailPage({ params }: { params: { ticketId: string } }) {
+export default function WebTicketDetailPage({ params }: { params: { ticketId: string } }) {
   const router = useRouter()
   const { ticketId } = params
+  const isMobile = useIsMobile()
   const [selectedTicketType, setSelectedTicketType] = useState("一日券")
   const [ticket, setTicket] = useState<TicketDetail | undefined>(undefined)
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
@@ -805,11 +810,15 @@ export default function TicketDetailPage({ params }: { params: { ticketId: strin
 
   if (!ticket) {
     return (
-      <div className="h-screen bg-background flex flex-col items-center justify-center">
-        <p className="text-muted-foreground">票券資訊不存在</p>
-        <Button onClick={() => router.back()} className="mt-4">
-          返回
-        </Button>
+      <div className="min-h-screen bg-background flex flex-col items-center justify-center">
+        {!isMobile && <DesktopNavigation activeTab="purchase" />}
+        <div className="text-center">
+          <p className="text-muted-foreground mb-4">票券資訊不存在</p>
+          <Button onClick={() => router.push("/purchase/tickets")} className="mt-4">
+            返回購票頁面
+          </Button>
+        </div>
+        {isMobile && <MobileNavigation activeTab="purchase" />}
       </div>
     )
   }
@@ -843,41 +852,45 @@ export default function TicketDetailPage({ params }: { params: { ticketId: strin
   ]
 
   return (
-    <div className="h-screen bg-background flex flex-col">
-      <header className="sticky top-0 z-40 bg-primary px-3 py-3 flex-shrink-0">
-        <div className="max-w-md mx-auto flex items-center">
-          <button onClick={() => router.back()} className="text-primary-foreground">
+    <div className="min-h-screen bg-background flex flex-col">
+      {!isMobile && <DesktopNavigation activeTab="purchase" />}
+      
+      <header className="bg-primary px-4 sm:px-6 lg:px-8 py-4">
+        <div className="max-w-6xl mx-auto flex items-center">
+          <Link href="/purchase/tickets" className="text-primary-foreground">
             <ArrowLeft className="h-5 w-5" />
-          </button>
-          <h1 className="flex-1 font-bold text-lg text-primary-foreground text-center">票券詳情</h1>
+          </Link>
+          <h1 className="flex-1 font-bold text-lg md:text-xl text-primary-foreground text-center">票券詳情</h1>
         </div>
       </header>
 
-      <div className="sticky top-16 z-35 bg-transparent backdrop-blur-sm max-w-md mx-auto w-full px-4 pl-0 pr-0">
-        <TicketTypeSelector selectedType={selectedTicketType} onTypeChange={handleTicketTypeChange} />
+      <div className="sticky top-0 md:top-16 z-35 bg-transparent backdrop-blur-sm">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <TicketTypeSelector selectedType={selectedTicketType} onTypeChange={handleTicketTypeChange} />
+        </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto">
-        <div className="max-w-md mx-auto pb-20">
+      <div className="flex-1 py-8">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Title */}
-          <div className="px-4 py-4">
-            <h2 className="text-xl font-bold text-foreground mb-1">{ticket.name}</h2>
-            <p className="text-lg font-semibold text-primary mt-2">
+          <div className="py-4">
+            <h2 className="text-xl md:text-2xl font-bold text-foreground mb-1">{ticket.name}</h2>
+            <p className="text-lg md:text-xl font-semibold text-primary mt-2">
               NT$ {ticket.price}~{ticket.price * 2}
             </p>
           </div>
 
           {/* Hero Banner */}
-          <div className="px-4 mb-4">
+          <div className="mb-6">
             <img
               src={ticket.image || "/placeholder.svg?height=200&width=400&query=澎湖觀光巴士票券"}
               alt={ticket.name}
-              className="w-full h-48 object-cover rounded-lg shadow-sm"
+              className="w-full h-48 md:h-64 object-cover rounded-lg shadow-sm"
             />
           </div>
 
           {/* Description */}
-          <div className="px-4 mb-6">
+          <div className="mb-6">
             <h3 className="text-lg font-semibold mb-3 flex items-center">
               <MapPin className="h-5 w-5 mr-2 text-primary" />
               票券說明
@@ -886,7 +899,7 @@ export default function TicketDetailPage({ params }: { params: { ticketId: strin
           </div>
 
           {/* Route Schedule */}
-          <div className="px-4 mb-6">
+          <div className="mb-6">
             <h3 className="text-lg font-semibold mb-4 flex items-center">
               <Bus className="h-5 w-5 mr-2 text-primary" />
               行車路線
@@ -1707,7 +1720,7 @@ export default function TicketDetailPage({ params }: { params: { ticketId: strin
           </div>
 
           {/* Accordion Sections */}
-          <div className="px-4 mb-6">
+          <div className="mb-6">
             <Accordion type="multiple" className="space-y-2">
               {/* Package Contents */}
               <AccordionItem value="package-contents">
@@ -1999,19 +2012,23 @@ export default function TicketDetailPage({ params }: { params: { ticketId: strin
       </div>
 
       {/* Price and Purchase Bar - Fixed at bottom */}
-      <div className="sticky bottom-0 bg-white border-t shadow-lg z-30">
-        <div className="max-w-md mx-auto px-4 py-3 flex items-center justify-between">
-          <div className="text-red-500 font-bold text-xl">
-            NT$ {ticket.price}~{ticket.price * 2}
+      <div className="sticky bottom-0 z-40 bg-background/95 backdrop-blur-sm border-t shadow-lg">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          <div className="flex items-center justify-between">
+            <div className="text-primary font-bold text-lg md:text-xl">
+              NT$ {ticket.price}~{ticket.price * 2}
+            </div>
+            <Button
+              onClick={handlePurchase}
+              className="bg-primary hover:bg-primary/90 text-primary-foreground px-6 md:px-8 py-2 md:py-3 rounded-lg font-medium text-base md:text-lg"
+            >
+              立即購票
+            </Button>
           </div>
-          <Button
-            onClick={handlePurchase}
-            className="bg-red-500 hover:bg-red-600 text-white px-8 py-2 rounded-lg font-medium"
-          >
-            立即購票
-          </Button>
         </div>
       </div>
+
+      {isMobile && <MobileNavigation activeTab="purchase" />}
 
       {/* Drawer for ticket selection */}
       <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>

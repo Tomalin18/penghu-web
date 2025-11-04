@@ -5,7 +5,8 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { MobileNavigation } from "@/components/mobile-navigation"
-import { HeaderWithMenu } from "@/components/header-with-menu"
+import { DesktopNavigation } from "@/components/desktop-navigation"
+import { useIsMobile } from "@/hooks/use-mobile"
 import { useRouter } from "next/navigation"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import {
@@ -23,8 +24,9 @@ import { getTickets, updateTicket, type StoredTicket } from "@/lib/ticket-storag
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 
-export default function MyTicketsPage() {
+export default function WebMyTicketsPage() {
   const router = useRouter()
+  const isMobile = useIsMobile()
   const [selectedTicket, setSelectedTicket] = useState<StoredTicket | null>(null)
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [isTicketInfoDialogOpen, setIsTicketInfoDialogOpen] = useState(false)
@@ -1313,10 +1315,16 @@ export default function MyTicketsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background pb-20">
-      <HeaderWithMenu title="我的車票" />
+    <div className="min-h-screen bg-background flex flex-col">
+      {!isMobile && <DesktopNavigation activeTab="my-tickets" />}
+      
+      <header className="md:hidden fixed top-0 left-0 right-0 bg-primary px-4 py-4 z-50">
+        <div className="max-w-6xl mx-auto flex items-center">
+          <h1 className="flex-1 font-bold text-xl text-primary-foreground text-center">我的車票</h1>
+        </div>
+      </header>
 
-      <main className="px-4 pb-20 pt-16 max-w-md mx-auto">
+      <main className={`flex-1 px-4 sm:px-6 lg:px-8 pt-16 md:pt-8 max-w-6xl mx-auto`}>
         {tickets.length === 0 ? (
           <div className="text-center py-12">
             <div className="w-20 h-20 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
@@ -1333,24 +1341,29 @@ export default function MyTicketsPage() {
           </div>
         ) : (
           <>
-            <div className="space-y-3">
+            <div className={`${isMobile ? "space-y-3" : "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"}`}>
               {tickets.map((ticket) => (
                 <TicketCard key={ticket.id} ticket={ticket} />
               ))}
             </div>
-
-            <div className="mt-8 space-y-3">
-              <Button
-                size="lg"
-                className="w-full h-12 text-base font-semibold bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl"
-                onClick={() => router.push("/purchase/tickets")}
-              >
-                購買更多票券
-              </Button>
-            </div>
           </>
         )}
       </main>
+
+      {/* Bottom Button - Sticky */}
+      {tickets.length > 0 && (
+        <div className="sticky bottom-0 z-40 bg-background/95 backdrop-blur-sm border-t">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <Button
+              size="lg"
+              className="w-full h-12 text-base font-semibold bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl"
+              onClick={() => router.push("/purchase/tickets")}
+            >
+              購買更多票券
+            </Button>
+          </div>
+        </div>
+      )}
 
       {RatingDialog()}
 
@@ -1372,7 +1385,7 @@ export default function MyTicketsPage() {
         </AlertDialogContent>
       </AlertDialog>
 
-      <MobileNavigation activeTab="my-tickets" />
+      {isMobile && <MobileNavigation activeTab="my-tickets" />}
     </div>
   )
 }

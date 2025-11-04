@@ -9,6 +9,8 @@ import { Label } from "@/components/ui/label"
 import { Checkbox } from "@/components/ui/checkbox"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { ScrollArea } from "@/components/ui/scroll-area"
+import { DesktopNavigation } from "@/components/desktop-navigation"
+import { useIsMobile } from "@/hooks/use-mobile"
 import Link from "next/link"
 import { useRouter, useParams, useSearchParams } from "next/navigation"
 import {
@@ -20,10 +22,11 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
 
-export default function EditReservationPage() {
+export default function WebEditReservationPage() {
   const params = useParams()
   const router = useRouter()
   const searchParams = useSearchParams()
+  const isMobile = useIsMobile()
   const ticketId = params.id as string
 
   const ticketDataFromUrl = {
@@ -306,7 +309,7 @@ export default function EditReservationPage() {
           </Button>
         </div>
 
-        <div className="grid grid-cols-7 gap-1 mb-2">
+        <div className="grid grid-cols-7 gap-2 mb-2">
           {dayNames.map((dayName) => (
             <div key={dayName} className="text-center text-sm font-medium text-muted-foreground py-2">
               {dayName}
@@ -314,10 +317,10 @@ export default function EditReservationPage() {
           ))}
         </div>
 
-        <div className="grid grid-cols-7 gap-1">
+        <div className="grid grid-cols-7 gap-2">
           {calendarDays.map((date, index) => {
             if (!date) {
-              return <div key={index} className="h-16"></div>
+              return <div key={index} className="h-20"></div>
             }
 
             const availability = getTicketAvailability(date)
@@ -332,7 +335,7 @@ export default function EditReservationPage() {
                 onClick={() => handleDateClick(date)}
                 disabled={isPastDate || isSoldOut}
                 className={`
-                  h-16 border rounded-lg flex flex-col items-center justify-center p-1 transition-colors
+                  h-20 border rounded-lg flex flex-col items-center justify-center p-1 transition-colors
                   ${
                     isSelected
                       ? `border-2 text-white`
@@ -351,14 +354,14 @@ export default function EditReservationPage() {
                     : {}
                 }
               >
-                <span className={`text-sm font-medium ${isSelected ? "text-white" : ""}`}>{date.getDate()}</span>
+                <span className={`text-[10px] font-medium leading-tight ${isSelected ? "text-white" : ""}`}>{date.getDate()}</span>
 
-                <div className="mt-1">
+                <div className="mt-0.5">
                   {isSoldOut ? (
-                    <span className="text-xs font-medium text-red-600 bg-red-100 py-0.5 rounded px-0">售完</span>
+                    <span className="text-[9px] font-medium text-red-600 bg-red-100 py-0.5 rounded px-0 leading-none whitespace-nowrap">售完</span>
                   ) : (
                     <span
-                      className={`text-xs font-bold py-0.5 rounded px-0 ${
+                      className={`text-[9px] font-bold py-0.5 rounded px-0 leading-none whitespace-nowrap ${
                         availability.count < 5
                           ? "text-red-700 bg-red-100"
                           : availability.count <= 10
@@ -407,22 +410,27 @@ export default function EditReservationPage() {
 
   const handleSuccessDialogClose = () => {
     setShowSuccessDialog(false)
-    router.push("/my-tickets")
+    router.push("/web/my-tickets")
   }
 
   return (
-    <div className="h-screen bg-background flex flex-col">
-      <header className="fixed top-0 left-0 right-0 bg-primary px-4 py-4 z-50">
-        <div className="max-w-md mx-auto flex items-center">
-          <Link href="/my-tickets" className="text-primary-foreground">
+    <div className="min-h-screen bg-background flex flex-col">
+      <DesktopNavigation activeTab="my-tickets" />
+      
+      <header className="bg-primary px-4 sm:px-6 lg:px-8 py-4">
+        <div className="max-w-6xl mx-auto flex items-center">
+          <Link href="/web/my-tickets" className="text-primary-foreground">
             <ArrowLeft className="h-6 w-6" />
           </Link>
           <h1 className="flex-1 font-bold text-xl text-primary-foreground text-center">取消劃位/修改劃位</h1>
         </div>
       </header>
 
-      <ScrollArea className="flex-1 pt-16 pb-20">
-        <div className="px-4 py-6 max-w-md mx-auto space-y-6">
+      <div className="flex-1 py-8">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* Left: Main Form (2 columns on desktop) */}
+            <div className="lg:col-span-2 space-y-6">
           <div>
             <h2 className="font-semibold text-lg text-foreground mb-4">已選擇票券</h2>
             <Card className="shadow-sm border border-border bg-card">
@@ -505,20 +513,22 @@ export default function EditReservationPage() {
 
           <div>
             <h2 className="font-semibold text-lg text-foreground mb-4">乘客資料</h2>
-            <Card className="shadow-sm">
-              <CardContent className="p-4 space-y-4">
-                <div className="opacity-60">
-                  <Label className="text-sm font-bold text-foreground">票種（不可修改）</Label>
-                  <Input
-                    value={getTicketTypeLabel(ticketData.ticketType)}
-                    disabled
-                    className="mt-2 bg-muted cursor-not-allowed"
-                  />
-                </div>
+              <Card className="shadow-sm">
+                <CardContent className="p-6 space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="opacity-60">
+                    <Label className="text-sm font-bold text-foreground">票種（不可修改）</Label>
+                    <Input
+                      value={getTicketTypeLabel(ticketData.ticketType)}
+                      disabled
+                      className="mt-2 bg-muted cursor-not-allowed"
+                    />
+                  </div>
 
-                <div className="opacity-60">
-                  <Label className="text-sm font-bold text-foreground">票券序號（不可修改）</Label>
-                  <Input value={ticketData.ticketSerial} disabled className="mt-2 bg-muted cursor-not-allowed" />
+                  <div className="opacity-60">
+                    <Label className="text-sm font-bold text-foreground">票券序號（不可修改）</Label>
+                    <Input value={ticketData.ticketSerial} disabled className="mt-2 bg-muted cursor-not-allowed" />
+                  </div>
                 </div>
 
                 <div>
@@ -540,75 +550,79 @@ export default function EditReservationPage() {
                   </select>
                 </div>
 
-                <div>
-                  <Label htmlFor="name" className="text-sm font-bold text-foreground">
-                    <span className="text-red-500">*</span> 姓名
-                  </Label>
-                  <Input
-                    id="name"
-                    placeholder="請輸入姓名"
-                    className="mt-2 border-2 focus:ring-2 focus:ring-primary focus:border-primary placeholder:text-muted-foreground/40 transition-colors"
-                    value={formData.name}
-                    onChange={(e) => handleInputChange("name", e.target.value)}
-                  />
-                </div>
-
-                <div>
-                  <Label htmlFor="phone" className="text-sm font-bold text-foreground">
-                    <span className="text-red-500">*</span> 手機號碼
-                  </Label>
-                  <div className="flex gap-2 mt-2">
-                    <select
-                      value={formData.countryCode}
-                      onChange={(e) => handleInputChange("countryCode", e.target.value)}
-                      className="w-32 p-3 border-2 rounded-lg bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-colors py-1"
-                    >
-                      <option value="+886">🇹🇼 +886</option>
-                      <option value="+86">🇨🇳 +86</option>
-                      <option value="+852">🇭🇰 +852</option>
-                      <option value="+853">🇲🇴 +853</option>
-                      <option value="+65">🇸🇬 +65</option>
-                      <option value="+60">🇲🇾 +60</option>
-                      <option value="+81">🇯🇵 +81</option>
-                      <option value="+82">🇰🇷 +82</option>
-                      <option value="+1">🇺🇸 +1</option>
-                      <option value="+44">🇬🇧 +44</option>
-                    </select>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="name" className="text-sm font-bold text-foreground">
+                      <span className="text-red-500">*</span> 姓名
+                    </Label>
                     <Input
-                      id="phone"
-                      placeholder="請輸入手機號碼"
-                      className="flex-1 border-2 focus:ring-2 focus:ring-primary focus:border-primary placeholder:text-muted-foreground/40 transition-colors"
-                      value={formData.phone}
-                      onChange={(e) => handleInputChange("phone", e.target.value)}
+                      id="name"
+                      placeholder="請輸入姓名"
+                      className="mt-2 border-2 focus:ring-2 focus:ring-primary focus:border-primary placeholder:text-muted-foreground/40 transition-colors"
+                      value={formData.name}
+                      onChange={(e) => handleInputChange("name", e.target.value)}
                     />
+                  </div>
+
+                  <div>
+                    <Label htmlFor="phone" className="text-sm font-bold text-foreground">
+                      <span className="text-red-500">*</span> 手機號碼
+                    </Label>
+                    <div className="flex gap-2 mt-2">
+                      <select
+                        value={formData.countryCode}
+                        onChange={(e) => handleInputChange("countryCode", e.target.value)}
+                        className="w-32 p-3 border-2 rounded-lg bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
+                      >
+                        <option value="+886">🇹🇼 +886</option>
+                        <option value="+86">🇨🇳 +86</option>
+                        <option value="+852">🇭🇰 +852</option>
+                        <option value="+853">🇲🇴 +853</option>
+                        <option value="+65">🇸🇬 +65</option>
+                        <option value="+60">🇲🇾 +60</option>
+                        <option value="+81">🇯🇵 +81</option>
+                        <option value="+82">🇰🇷 +82</option>
+                        <option value="+1">🇺🇸 +1</option>
+                        <option value="+44">🇬🇧 +44</option>
+                      </select>
+                      <Input
+                        id="phone"
+                        placeholder="請輸入手機號碼"
+                        className="flex-1 border-2 focus:ring-2 focus:ring-primary focus:border-primary placeholder:text-muted-foreground/40 transition-colors"
+                        value={formData.phone}
+                        onChange={(e) => handleInputChange("phone", e.target.value)}
+                      />
+                    </div>
                   </div>
                 </div>
 
-                <div>
-                  <Label htmlFor="email" className="text-sm font-bold text-foreground">
-                    Email
-                  </Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    placeholder="請輸入電子郵件"
-                    className="mt-2 border-2 focus:ring-2 focus:ring-primary focus:border-primary placeholder:text-muted-foreground/40 transition-colors"
-                    value={formData.email}
-                    onChange={(e) => handleInputChange("email", e.target.value)}
-                  />
-                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="email" className="text-sm font-bold text-foreground">
+                      Email
+                    </Label>
+                    <Input
+                      id="email"
+                      type="email"
+                      placeholder="請輸入電子郵件"
+                      className="mt-2 border-2 focus:ring-2 focus:ring-primary focus:border-primary placeholder:text-muted-foreground/40 transition-colors"
+                      value={formData.email}
+                      onChange={(e) => handleInputChange("email", e.target.value)}
+                    />
+                  </div>
 
-                <div>
-                  <Label htmlFor="id" className="text-sm font-bold text-foreground">
-                    身分證/護照號碼
-                  </Label>
-                  <Input
-                    id="id"
-                    placeholder="請輸入身分證或護照號碼"
-                    className="mt-2 border-2 focus:ring-2 focus:ring-primary focus:border-primary placeholder:text-muted-foreground/40 transition-colors"
-                    value={formData.id}
-                    onChange={(e) => handleInputChange("id", e.target.value)}
-                  />
+                  <div>
+                    <Label htmlFor="id" className="text-sm font-bold text-foreground">
+                      身分證/護照號碼
+                    </Label>
+                    <Input
+                      id="id"
+                      placeholder="請輸入身分證或護照號碼"
+                      className="mt-2 border-2 focus:ring-2 focus:ring-primary focus:border-primary placeholder:text-muted-foreground/40 transition-colors"
+                      value={formData.id}
+                      onChange={(e) => handleInputChange("id", e.target.value)}
+                    />
+                  </div>
                 </div>
 
                 <div>
@@ -667,14 +681,59 @@ export default function EditReservationPage() {
                 <span className="text-red-500">*</span>
               </label>
             </div>
+            </div>
+
+            {/* Right: Summary Sidebar */}
+            <div className="lg:col-span-1">
+              <div className="sticky top-8">
+                <Card className="shadow-sm border border-border bg-card">
+                  <CardContent className="p-6">
+                    <h3 className="font-semibold text-lg text-foreground mb-4">劃位摘要</h3>
+                    <div className="space-y-3">
+                      <div>
+                        <div className="text-sm text-muted-foreground mb-2">票券名稱</div>
+                        <div className="font-medium text-foreground">{ticketData.ticketName}</div>
+                        <div className="text-sm text-muted-foreground">{ticketData.type}</div>
+                      </div>
+                      
+                      {seatSelectionType === "cancel" && selectedDate && (
+                        <div>
+                          <div className="text-sm text-muted-foreground mb-2">選擇日期</div>
+                          <div className="font-medium text-foreground">
+                            {selectedDate.getFullYear()}/{String(selectedDate.getMonth() + 1).padStart(2, "0")}/{String(selectedDate.getDate()).padStart(2, "0")}
+                          </div>
+                        </div>
+                      )}
+                      
+                      {seatSelectionType === "postpone" && (
+                        <div>
+                          <div className="text-sm text-muted-foreground mb-2">劃位狀態</div>
+                          <div className="font-medium text-foreground">暫不劃位</div>
+                        </div>
+                      )}
+                      
+                      {pickupLocation && (
+                        <div>
+                          <div className="text-sm text-muted-foreground mb-2">上車地點</div>
+                          <div className="font-medium text-foreground">
+                            {routeStations.find(s => s.value === pickupLocation)?.label || pickupLocation}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
           </div>
         </div>
-      </ScrollArea>
+      </div>
 
-      <div className="fixed bottom-0 left-0 right-0 px-4 bg-background/95 backdrop-blur-sm border-t z-40">
-        <div className="max-w-md mx-auto py-4">
+      {/* Bottom Button - Sticky */}
+      <div className="sticky bottom-0 z-40 bg-background/95 backdrop-blur-sm border-t">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <Button
-            className={`w-full h-12 rounded-xl font-medium transition-all duration-200 ${
+            className={`w-full h-12 rounded-xl font-medium text-lg transition-all duration-200 ${
               isFormValid()
                 ? "bg-primary hover:bg-primary/90 text-primary-foreground shadow-md hover:shadow-lg"
                 : "bg-gray-200 text-gray-400 cursor-not-allowed opacity-60"

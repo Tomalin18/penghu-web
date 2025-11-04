@@ -1,7 +1,11 @@
 {
-  "name": "my-v0-project",
+  "name": "penghu-web",
   "version": "0.1.0",
   "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Tomalin18/penghu-web.git"
+  },
   "scripts": {
     "build": "next build",
     "dev": "next dev",

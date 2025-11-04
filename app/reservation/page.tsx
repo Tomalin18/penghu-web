@@ -4,17 +4,14 @@ import { useState, useRef } from "react"
 import { ArrowLeft, Store, Bus, Plane } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { ScrollArea } from "@/components/ui/scroll-area"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { DesktopNavigation } from "@/components/desktop-navigation"
 import Link from "next/link"
 
-export default function ReservationSourcePage() {
+export default function WebReservationPage() {
   const [selectedChannel, setSelectedChannel] = useState<string>("")
   const [selectedTicketType, setSelectedTicketType] = useState<string>("none")
   const [selectedRoute, setSelectedRoute] = useState<string>("")
-
-  const ticketTypeRef = useRef<HTMLDivElement>(null)
-  const routeRef = useRef<HTMLDivElement>(null)
 
   const channels = [
     { id: "7-11", name: "7-11", icon: Store },
@@ -77,26 +74,11 @@ export default function ReservationSourcePage() {
 
   const handleChannelSelect = (channelId: string) => {
     setSelectedChannel(channelId)
-    setTimeout(() => {
-      ticketTypeRef.current?.scrollIntoView({
-        behavior: "smooth",
-        block: "center",
-      })
-    }, 100)
   }
 
   const handleTicketTypeSelect = (type: string) => {
     setSelectedTicketType(type)
-    setSelectedRoute("") // Reset route selection when ticket type changes
-
-    if (type !== "none") {
-      setTimeout(() => {
-        routeRef.current?.scrollIntoView({
-          behavior: "smooth",
-          block: "center",
-        })
-      }, 100)
-    }
+    setSelectedRoute("")
   }
 
   const handleTicketSelect = (ticketId: string) => {
@@ -104,162 +86,132 @@ export default function ReservationSourcePage() {
   }
 
   const currentTickets = ticketOptions[selectedTicketType as keyof typeof ticketOptions] || []
-
   const isAllSelected = selectedChannel && selectedTicketType && selectedTicketType !== "none" && selectedRoute
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      <header className="fixed top-0 left-0 right-0 z-30 bg-primary px-4 py-4">
-        <div className="max-w-md mx-auto flex items-center">
+      <DesktopNavigation activeTab="reservation" />
+      
+      <header className="bg-primary px-4 sm:px-6 lg:px-8 py-4">
+        <div className="max-w-6xl mx-auto flex items-center">
           <Link href="/" className="text-primary-foreground">
             <ArrowLeft className="h-6 w-6" />
           </Link>
-          <h1 className="flex-1 font-bold text-primary-foreground text-center text-xl">劃位 </h1>
+          <h1 className="flex-1 font-bold text-xl text-primary-foreground text-center">劃位</h1>
         </div>
       </header>
 
-      <div className="flex-1 pt-16 pb-20">
-        <ScrollArea className="h-full">
-          <div className="px-4 py-6 max-w-md mx-auto">
-            {/* Purchase Channel Selection */}
-            <div
-              className={`mb-8 rounded-lg p-4 border-2 transition-all duration-300 ${
-                !selectedChannel ? "bg-primary/5 border-primary/20" : "bg-transparent border-transparent"
-              }`}
-            >
-              <h2 className="font-semibold text-foreground mb-4 text-lg">請選擇您的購買通路</h2>
-              <div className="grid grid-cols-2 gap-3">
-                {channels.map((channel) => {
-                  const IconComponent = channel.icon
-                  const isSelected = selectedChannel === channel.id
-                  return (
-                    <Card
-                      key={channel.id}
-                      className={`shadow-sm hover:shadow-md transition-all cursor-pointer border-2 ${
-                        isSelected ? "border-primary bg-primary/5" : "border-transparent hover:border-primary/60"
-                      }`}
-                      onClick={() => handleChannelSelect(channel.id)}
-                    >
-                      <CardContent className="p-3 text-center py-0 px-0">
-                        <IconComponent
-                          className={`h-6 w-6 mx-auto mb-2 ${isSelected ? "text-primary" : "text-primary/70"}`}
-                        />
-                        <p className={`text-sm font-medium ${isSelected ? "text-primary" : "text-foreground"}`}>
-                          {channel.name}
-                        </p>
-                      </CardContent>
-                    </Card>
-                  )
-                })}
+      <div className="flex-1 py-8">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+          {/* Purchase Channel Selection */}
+          <div>
+            <h2 className="font-semibold text-xl text-foreground mb-6">請選擇您的購買通路</h2>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+              {channels.map((channel) => {
+                const IconComponent = channel.icon
+                const isSelected = selectedChannel === channel.id
+                return (
+                  <Card
+                    key={channel.id}
+                    className={`shadow-sm hover:shadow-md transition-all cursor-pointer border-2 ${
+                      isSelected ? "border-primary bg-primary/5" : "border-transparent hover:border-primary/60"
+                    }`}
+                    onClick={() => handleChannelSelect(channel.id)}
+                  >
+                    <CardContent className="p-4 text-center">
+                      <IconComponent
+                        className={`h-8 w-8 mx-auto mb-3 ${isSelected ? "text-primary" : "text-primary/70"}`}
+                      />
+                      <p className={`text-sm font-medium ${isSelected ? "text-primary" : "text-foreground"}`}>
+                        {channel.name}
+                      </p>
+                    </CardContent>
+                  </Card>
+                )
+              })}
+            </div>
+          </div>
+
+          {/* Ticket Type Selection */}
+          <div>
+            <h2 className="text-xl font-semibold text-foreground mb-4">請選擇您的票券類型</h2>
+            <Select value={selectedTicketType} onValueChange={handleTicketTypeSelect}>
+              <SelectTrigger className="w-full max-w-md">
+                <SelectValue placeholder="請選擇票券類型" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="none">請選擇</SelectItem>
+                <SelectItem value="一日券">一日券</SelectItem>
+                <SelectItem value="二日券">二日券</SelectItem>
+                <SelectItem value="三日券">三日券</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Route Selection Section */}
+          <div>
+            <h2 className="text-xl font-semibold text-foreground mb-4">請選擇票券</h2>
+            {!selectedTicketType || selectedTicketType === "none" ? (
+              <div className="text-sm text-muted-foreground p-4 bg-muted/50 rounded-lg">
+                請先選擇票券類型
               </div>
-            </div>
-
-            {/* Ticket Type Selection */}
-            <div
-              className={`mb-8 rounded-lg p-4 border-2 transition-all duration-300 ${
-                selectedChannel && !selectedRoute
-                  ? "bg-primary/5 border-primary/20"
-                  : "bg-transparent border-transparent"
-              }`}
-              ref={ticketTypeRef}
-            >
-              <h2 className="text-lg font-semibold text-foreground mb-4">請選擇您的票券類型</h2>
-              <Select value={selectedTicketType} onValueChange={handleTicketTypeSelect}>
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="請選擇票券類型" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="none">請選擇</SelectItem>
-                  <SelectItem value="一日券">一日券</SelectItem>
-                  <SelectItem value="二日券">二日券</SelectItem>
-                  <SelectItem value="三日券">三日券</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            {/* Route Selection Section */}
-            <div
-              className={`mb-8 pb-4 rounded-lg p-4 border-2 transition-all duration-300 ${
-                selectedTicketType && selectedTicketType !== "none" && !selectedRoute
-                  ? "bg-primary/5 border-primary/20"
-                  : "bg-transparent border-transparent"
-              }`}
-              ref={routeRef}
-            >
-              <h2 className="text-lg font-semibold text-foreground mb-4">請選擇票券</h2>
-              {!selectedTicketType || selectedTicketType === "none" ? (
-                <div className="space-y-3 opacity-50">
-                  <div className="text-sm text-muted-foreground mb-3 p-3 bg-muted/50 rounded-lg">請先選擇票券類型</div>
-                  <Card className="shadow-sm border-2 border-transparent cursor-not-allowed">
-                    <CardContent className="p-3 py-0 px-2.5">
-                      <div className="flex items-center space-x-3">
-                        <div className="w-24 h-24 bg-muted/50 rounded"></div>
-                        <div>
-                          <h3 className="font-semibold text-sm text-muted-foreground">票券名稱</h3>
-                          <p className="text-sm font-medium mt-1 text-muted-foreground">NT$ 價格</p>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {currentTickets.map((ticket) => (
+                  <Card
+                    key={ticket.id}
+                    className={`shadow-sm cursor-pointer transition-all border-2 ${
+                      selectedRoute === ticket.id
+                        ? "border-primary bg-primary/5"
+                        : "border-transparent hover:border-primary/50"
+                    }`}
+                    onClick={() => handleTicketSelect(ticket.id)}
+                  >
+                    <CardContent className="p-4">
+                      <div className="flex flex-col items-center space-y-3">
+                        <img
+                          src={ticket.image || "/placeholder.svg?height=32&width=32"}
+                          alt="Ticket"
+                          className={`object-contain rounded w-32 h-32 ${selectedRoute === ticket.id ? "opacity-100" : "opacity-70"}`}
+                        />
+                        <div className="text-center">
+                          <h3
+                            className={`font-semibold text-base mb-2 ${selectedRoute === ticket.id ? "text-primary" : "text-foreground"}`}
+                          >
+                            {ticket.name}
+                          </h3>
+                          <p
+                            className={`text-sm font-medium ${selectedRoute === ticket.id ? "text-primary" : "text-primary/70"}`}
+                          >
+                            NT$ {ticket.price}~{ticket.price * 2}
+                          </p>
                         </div>
                       </div>
                     </CardContent>
                   </Card>
-                </div>
-              ) : (
-                <div className="space-y-3">
-                  {currentTickets.map((ticket) => (
-                    <Card
-                      key={ticket.id}
-                      className={`shadow-sm cursor-pointer transition-all border-2 ${
-                        selectedRoute === ticket.id
-                          ? "border-primary bg-primary/5"
-                          : "border-transparent hover:border-primary/50"
-                      }`}
-                      onClick={() => handleTicketSelect(ticket.id)}
-                    >
-                      <CardContent className="p-3 py-0 px-2.5">
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center space-x-3">
-                            <img
-                              src={ticket.image || "/placeholder.svg?height=32&width=32"}
-                              alt="Ticket"
-                              className={`object-contain rounded w-24 h-24 ${selectedRoute === ticket.id ? "opacity-100" : "opacity-70"}`}
-                            />
-                            <div>
-                              <h3
-                                className={`font-semibold text-sm ${selectedRoute === ticket.id ? "text-primary" : "text-foreground"}`}
-                              >
-                                {ticket.name}
-                              </h3>
-                              <p
-                                className={`text-sm font-medium mt-1 ${selectedRoute === ticket.id ? "text-primary" : "text-primary/70"}`}
-                              >
-                                NT$ {ticket.price}~{ticket.price * 2}
-                              </p>
-                            </div>
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-              )}
-            </div>
+                ))}
+              </div>
+            )}
           </div>
-        </ScrollArea>
+
+        </div>
       </div>
 
-      <div className="fixed bottom-0 left-0 right-0 px-4 bg-background/95 backdrop-blur-sm border-t z-20">
-        <div className="max-w-md mx-auto py-4">
+      {/* Bottom Button - Sticky */}
+      <div className="sticky bottom-0 z-40 bg-background/95 backdrop-blur-sm border-t">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           {isAllSelected ? (
             <Link
               href={`/reservation/ticket-info?ticketId=${selectedRoute}&channel=${selectedChannel}&ticketType=${selectedTicketType}`}
             >
-              <Button className="w-full h-12 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl font-medium">
+              <Button className="w-full h-12 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl font-medium text-lg">
                 下一步
               </Button>
             </Link>
           ) : (
             <Button
               disabled
-              className="w-full h-12 bg-muted text-muted-foreground rounded-xl font-medium cursor-not-allowed"
+              className="w-full h-12 bg-muted text-muted-foreground rounded-xl font-medium text-lg cursor-not-allowed"
             >
               下一步
             </Button>
@@ -269,3 +221,4 @@ export default function ReservationSourcePage() {
     </div>
   )
 }
+

@@ -5,8 +5,10 @@ import { CheckCircle, Download, MapPin, Calendar } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import MobileNavigation from "@/components/mobile-navigation"
+import { DesktopNavigation } from "@/components/desktop-navigation"
+import { MobileNavigation } from "@/components/mobile-navigation"
 import { useRouter } from "next/navigation"
+import { useIsMobile } from "@/hooks/use-mobile"
 
 interface RouteInfo {
   id: string
@@ -38,9 +40,10 @@ interface ReservationData {
   ticketQuantities: Record<string, number>
 }
 
-export default function ReservationSuccessPage() {
+export default function WebReservationSuccessPage() {
   const router = useRouter()
   const [reservationData, setReservationData] = useState<ReservationData | null>(null)
+  const isMobile = useIsMobile()
 
   useEffect(() => {
     const storedData = localStorage.getItem("reservationData")
@@ -57,15 +60,6 @@ export default function ReservationSuccessPage() {
       router.push("/reservation")
     }
   }, [router])
-
-  const getStationName = (stationValue: string) => {
-    if (!stationValue) return ""
-    const parts = stationValue.split("-")
-    if (parts.length >= 2) {
-      return parts[0]
-    }
-    return stationValue
-  }
 
   const getTicketTypeLabel = (ticketType: string) => {
     const labels: Record<string, string> = {
@@ -124,55 +118,9 @@ export default function ReservationSuccessPage() {
     return station ? station.label : stationId
   }
 
-  // 簡化的票券詳情組件（與購票成功頁面一致）
-  const TicketDetails = ({ ticketData }: { ticketData: any }) => {
-    return (
-      <div className="space-y-4">
-        {/* 乘客資訊 */}
-        {ticketData.passengers && ticketData.passengers.length > 0 && (
-          <div className="space-y-3">
-            <h4 className="font-semibold text-xs text-foreground">乘客資訊</h4>
-            <div className="bg-muted/50 p-4 rounded-lg space-y-4">
-              {ticketData.passengers.map((passenger: any, index: number) => (
-                <div key={index} className="pb-4 border-b border-border last:border-b-0 last:pb-0">
-                  <div className="space-y-1 text-xs">
-                    {/* 第一行：姓名、票種 */}
-                    <div className="grid grid-cols-2 gap-3 items-center">
-                      <div className="flex items-center gap-2">
-                        <span className="text-muted-foreground text-xs whitespace-nowrap">姓名：</span>
-                        <span className="font-medium text-xs whitespace-nowrap">{passenger.name}</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-muted-foreground text-xs whitespace-nowrap">票種：</span>
-                        <span className="font-medium text-xs whitespace-nowrap">{getTicketTypeLabel(passenger.ticketType)}</span>
-                      </div>
-                    </div>
-                    {/* 第二行：Email */}
-                    <div className="flex items-center gap-2">
-                      <span className="text-muted-foreground text-xs whitespace-nowrap">Email：</span>
-                      <span className="font-medium text-xs whitespace-nowrap">{passenger.email}</span>
-                    </div>
-                    {/* 第三行：電話 */}
-                    <div className="flex items-center gap-2">
-                      <span className="text-muted-foreground text-xs whitespace-nowrap">電話：</span>
-                      <span className="font-medium text-xs whitespace-nowrap">
-                        {passenger.countryCode ? `${passenger.countryCode} ${passenger.phone}` : passenger.phone}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-      </div>
-    )
-  }
-
-
   if (!reservationData) {
     return (
-      <div className="h-screen bg-background flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
           <p className="text-muted-foreground">載入中...</p>
@@ -182,49 +130,51 @@ export default function ReservationSuccessPage() {
   }
 
   return (
-    <div className="h-screen bg-background flex flex-col">
-      <header className="bg-primary px-4 py-4 sticky top-0 z-40 flex-shrink-0">
-        <div className="max-w-md mx-auto">
+    <div className="min-h-screen bg-background flex flex-col">
+      {!isMobile && <DesktopNavigation activeTab="reservation" />}
+      
+      <header className="bg-primary px-4 sm:px-6 lg:px-8 py-4">
+        <div className="max-w-6xl mx-auto">
           <h1 className="font-bold text-xl text-primary-foreground text-center">劃位 - 成功</h1>
         </div>
       </header>
 
-      <div className="flex-1 overflow-y-auto">
-        <div className="px-4 py-8 max-w-md mx-auto pb-24 pt-5">
+      <div className="flex-1 py-8">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Success Message */}
-          <div className="flex items-center justify-between gap-4 mt-0 mb-5">
-            <div className="flex items-center gap-4 flex-1 flex-row py-6">
-              <div className="w-20 h-20 bg-primary rounded-full flex items-center justify-center flex-shrink-0">
-                <CheckCircle className="h-12 w-12 text-primary-foreground" />
+          <div className="flex items-start justify-between gap-4 mb-6">
+            <div className="flex items-center gap-4 flex-1">
+              <div className="w-16 h-16 md:w-20 md:h-20 bg-primary rounded-full flex items-center justify-center flex-shrink-0">
+                <CheckCircle className="h-8 w-8 md:h-12 md:w-12 text-primary-foreground" />
               </div>
               <div>
-                <h2 className="font-bold text-xl text-foreground mb-2">劃位成功！</h2>
+                <h2 className="font-bold text-lg md:text-xl text-foreground mb-2">劃位成功！</h2>
                 <p className="text-muted-foreground">您的劃位已完成</p>
               </div>
             </div>
             <div className="flex-shrink-0">
               <Button
                 variant="outline"
-                className="h-16 px-4 flex flex-col items-center justify-center gap-0.5 py-0 bg-primary text-primary-foreground hover:bg-primary/90"
+                className="h-12 md:h-16 px-4 flex flex-col items-center justify-center gap-0.5 py-0 bg-primary text-primary-foreground hover:bg-primary/90"
                 onClick={() => {
                   // TODO: Implement save to album functionality
                   alert("保存至相簿功能開發中")
                 }}
               >
                 <Download className="h-4 w-4 mb-1" />
-                <span className="text-sm leading-tight">保存至相簿</span>
+                <span className="text-xs md:text-sm leading-tight">保存至相簿</span>
               </Button>
             </div>
           </div>
 
           {/* Ticket Cards */}
-          <div className="space-y-4 mb-8">
+          <div className="space-y-4">
             <Card className="shadow-sm border-l-4 border-l-primary">
-              <CardContent className="p-4">
+              <CardContent className="p-4 md:p-6">
                 {/* 票券基本資訊 */}
                 <div className="flex justify-between items-start mb-4">
                   <div className="flex-1">
-                    <h3 className="font-semibold text-foreground text-sm mb-2">
+                    <h3 className="font-semibold text-foreground text-sm md:text-base mb-2">
                       {reservationData.ticketInfo.name}
                     </h3>
                     {/* 顯示所有路線資訊 */}
@@ -275,7 +225,7 @@ export default function ReservationSuccessPage() {
                   
                   return (
                     <div className="mb-4">
-                      <h4 className="font-semibold text-xs text-foreground mb-2">票券明細</h4>
+                      <h4 className="font-semibold text-xs md:text-sm text-foreground mb-2">票券明細</h4>
                       <div className="bg-muted/50 p-3 rounded-lg space-y-1">
                         {Object.entries(ticketBreakdown).map(([key, detail]: [string, any]) => (
                           <div key={key} className="flex justify-between text-xs">
@@ -313,7 +263,6 @@ export default function ReservationSuccessPage() {
                       </span>
                     </div>
 
-
                     {/* 該路線的乘客資訊 */}
                     <div className="bg-muted/30 p-3 rounded-lg">
                       <h5 className="font-medium text-xs text-foreground mb-2">乘客資訊</h5>
@@ -338,7 +287,7 @@ export default function ReservationSuccessPage() {
                                 <span className="text-muted-foreground">上車地點：</span>
                                 <span className="font-medium">{getPickupLocation(passenger, route)}</span>
                               </div>
-                              <div className="grid grid-cols-2 gap-2 items-center mb-1">
+                              <div className="grid grid-cols-1 md:grid-cols-2 gap-2 items-center mb-1">
                                 <div className="flex items-center gap-1">
                                   <span className="text-muted-foreground">票種：</span>
                                   <span className="font-medium">{getTicketTypeLabel(passenger.ticketType)}</span>
@@ -370,10 +319,10 @@ export default function ReservationSuccessPage() {
                   <Button
                     size="sm"
                     variant="outline"
-                    className="flex-1 h-8 text-xs bg-transparent"
+                    className="flex-1 h-8 md:h-10 text-xs md:text-sm bg-transparent"
                     onClick={() => router.push("/my-tickets")}
                   >
-                    <Calendar className="h-3 w-3 mr-1" />
+                    <Calendar className="h-3 w-3 md:h-4 md:w-4 mr-1" />
                     我的車票
                   </Button>
                 </div>
@@ -383,7 +332,8 @@ export default function ReservationSuccessPage() {
         </div>
       </div>
 
-      <MobileNavigation />
+      {isMobile && <MobileNavigation activeTab="reservation" />}
     </div>
   )
 }
+
