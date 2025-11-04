@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { MobileNavigation } from "@/components/mobile-navigation"
-import { HeaderWithMenu } from "@/components/header-with-menu"
 import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from "@/components/ui/carousel"
 import { Headphones } from "lucide-react"
 import Autoplay from "embla-carousel-autoplay"
@@ -135,8 +134,6 @@ const HomePage = () => {
 
   return (
     <div className="min-h-screen bg-background pb-20">
-      <HeaderWithMenu showBackButton={false} />
-
       {/* Main Content */}
       <main className="max-w-md mx-auto pt-16">
         <div className="relative">
@@ -231,15 +228,11 @@ const HomePage = () => {
         <div className="px-3 space-y-3 mt-6">
           <div className="flex items-center justify-between">
             <h2 className="font-semibold text-foreground text-2xl">熱門景點</h2>
-            <Link href="/attractions">
-              <Button variant="outline" size="sm" className="rounded-full px-3 py-1 h-7 bg-transparent text-base">
-                MORE &gt;
-              </Button>
-            </Link>
+            {/* 景點頁面已移除，移除 MORE 按鈕或改為不顯示 */}
           </div>
           <div className="grid grid-cols-2 gap-3">
             {popularAttractions.map((attraction) => (
-              <Link key={attraction.id} href={`/attractions/${attraction.id}`}>
+              <div key={attraction.id}>
                 <Card className="overflow-hidden hover:shadow-lg transition-shadow py-0 gap-0">
                   <div className="aspect-[4/3] bg-muted">
                     <img
@@ -284,7 +277,7 @@ const HomePage = () => {
                     </div>
                   </div>
                 </Card>
-              </Link>
+              </div>
             ))}
           </div>
         </div>
@@ -293,11 +286,7 @@ const HomePage = () => {
         <div className="px-3 py-4 space-y-3 mt-6">
           <div className="flex items-center justify-between">
             <h2 className="font-semibold text-foreground text-2xl">最新消息</h2>
-            <Link href="/news">
-              <Button variant="outline" size="sm" className="rounded-full px-3 py-1 h-7 bg-transparent text-base">
-                MORE &gt;
-              </Button>
-            </Link>
+            {/* 最新消息頁面已移除，移除 MORE 按鈕或改為不顯示 */}
           </div>
           <div className="space-y-4 bg-white rounded-lg p-4">
             {newsData.map((news, index) => (
@@ -333,3 +322,4 @@ const HomePage = () => {
 }
 
 export default HomePage
+

@@ -27,7 +27,6 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Drawer, DrawerContent, DrawerFooter, DrawerHeader, DrawerTitle } from "@/components/ui/drawer"
 import { TicketTypeSelector } from "@/components/ticket-type-selector"
-import { DesktopNavigation } from "@/components/desktop-navigation"
 import { MobileNavigation } from "@/components/mobile-navigation"
 import { useIsMobile } from "@/hooks/use-mobile"
 import { useRouter } from "next/navigation"
@@ -811,7 +810,6 @@ export default function WebTicketDetailPage({ params }: { params: { ticketId: st
   if (!ticket) {
     return (
       <div className="min-h-screen bg-background flex flex-col items-center justify-center">
-        {!isMobile && <DesktopNavigation activeTab="purchase" />}
         <div className="text-center">
           <p className="text-muted-foreground mb-4">票券資訊不存在</p>
           <Button onClick={() => router.push("/purchase/tickets")} className="mt-4">
@@ -853,7 +851,6 @@ export default function WebTicketDetailPage({ params }: { params: { ticketId: st
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      {!isMobile && <DesktopNavigation activeTab="purchase" />}
       
       <header className="bg-primary px-4 sm:px-6 lg:px-8 py-4">
         <div className="max-w-6xl mx-auto flex items-center">

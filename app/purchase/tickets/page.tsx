@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react"
 import { Card, CardContent } from "@/components/ui/card"
 import { TicketTypeSelector } from "@/components/ticket-type-selector"
-import { DesktopNavigation } from "@/components/desktop-navigation"
 import Link from "next/link"
 import { useRouter, useSearchParams } from "next/navigation"
 
@@ -116,7 +115,6 @@ export default function WebTicketPurchasePage() {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      <DesktopNavigation activeTab="purchase" />
       
       <header className="bg-primary px-4 sm:px-6 lg:px-8 py-4">
         <div className="max-w-6xl mx-auto flex items-center">

@@ -7,7 +7,6 @@ import { Badge } from "@/components/ui/badge"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Card, CardContent } from "@/components/ui/card"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { HeaderWithMenu } from "@/components/header-with-menu"
 import { useRouter } from "next/navigation"
 import { useState, useEffect } from "react"
 import Image from "next/image"
@@ -351,7 +350,6 @@ export default function TicketInfoPage({ params }: { params: { ticketId: string 
 
   return (
     <div className="h-screen bg-background flex flex-col">
-      <HeaderWithMenu title="票券資訊" />
 
       <div className="flex-1 overflow-y-auto">
         <div className="max-w-md mx-auto pb-20">
