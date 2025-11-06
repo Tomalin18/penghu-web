@@ -67,11 +67,8 @@ export function DesktopNavigation({ activeTab = "home" }: DesktopNavigationProps
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <div className="flex items-center">
-            <Link href="/" className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-                <span className="text-primary-foreground font-bold text-lg">澎</span>
-              </div>
-              <span className="font-bold text-lg text-foreground hidden sm:inline-block">澎湖好行</span>
+            <Link href="/" className="flex items-center">
+              <img src="/images/penghu-logo.png" alt="Like 澎湖 - 台灣好行" className="h-16 w-auto object-contain" />
             </Link>
           </div>
 
