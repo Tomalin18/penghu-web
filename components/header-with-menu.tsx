@@ -66,7 +66,7 @@ export function HeaderWithMenu({ title, showBackButton = true, onBack }: HeaderW
             {/* Logo */}
             <div className="flex items-center flex-shrink-0">
               <Link href="/" className="flex items-center">
-                <img src="/images/taiwan-logo.png" alt="Taiwan Tourist Shuttle" className="h-12 w-auto object-contain" />
+                <img src="/images/penghu-logo.png" alt="Like 澎湖 - 台灣好行" className="h-16 w-auto object-contain" />
               </Link>
             </div>
 
@@ -188,7 +188,7 @@ export function HeaderWithMenu({ title, showBackButton = true, onBack }: HeaderW
             {title ? (
               <h1 className="text-lg font-semibold">{title}</h1>
             ) : (
-              <img src="/images/taiwan-logo.png" alt="Taiwan Tourist Shuttle" className="h-10 w-auto object-contain" />
+              <img src="/images/penghu-logo.png" alt="Like 澎湖 - 台灣好行" className="h-16 w-auto object-contain" />
             )}
           </div>
 
