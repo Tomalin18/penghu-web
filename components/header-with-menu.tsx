@@ -3,6 +3,12 @@
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import { Select, SelectContent, SelectItem, SelectTrigger } from "@/components/ui/select"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 import { Menu, Home, Ticket, Calendar, Globe, ChevronLeft, CreditCard } from "lucide-react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
@@ -20,7 +26,7 @@ export function HeaderWithMenu({ title, showBackButton = true, onBack }: HeaderW
   const [isLoggedIn, setIsLoggedIn] = useState(false)
 
   const navigationItems = [
-    { id: "home", label: "首頁", icon: Home, href: "/" },
+    { id: "home", label: "官網首頁", icon: Home, href: "/" },
     { id: "my-tickets", label: "我的車票", icon: Ticket, href: "/my-tickets" },
     { id: "purchase", label: "我要購票", icon: CreditCard, href: "/purchase/tickets" },
     { id: "reservation", label: "有票劃位", icon: Calendar, href: "/reservation" },
@@ -45,7 +51,7 @@ export function HeaderWithMenu({ title, showBackButton = true, onBack }: HeaderW
   }
 
   const languageOptions = {
-    "zh-TW": "繁中",
+    "zh-TW": "繁體中文",
     en: "English",
     ja: "日本語",
     ko: "한국어",
@@ -80,6 +86,40 @@ export function HeaderWithMenu({ title, showBackButton = true, onBack }: HeaderW
                 )
               })}
             </nav>
+
+            {/* Language Switcher */}
+            <div className="flex items-center">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button
+                    type="button"
+                    className="flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+                  >
+                    <Globe className="h-4 w-4" />
+                    <span className="hidden md:inline">{languageOptions[currentLanguage]}</span>
+                    <span className="sr-only md:hidden">切換語系</span>
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="!z-[100]">
+                  <DropdownMenuItem onClick={() => handleLanguageChange("zh-TW")}>
+                    {currentLanguage === "zh-TW" && "✓ "}
+                    繁體中文
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => handleLanguageChange("en")}>
+                    {currentLanguage === "en" && "✓ "}
+                    English
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => handleLanguageChange("ja")}>
+                    {currentLanguage === "ja" && "✓ "}
+                    日本語
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => handleLanguageChange("ko")}>
+                    {currentLanguage === "ko" && "✓ "}
+                    한국어
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
 
           </div>
         </div>

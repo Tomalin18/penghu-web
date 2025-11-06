@@ -1,12 +1,18 @@
 "use client"
 
-import { Home, Ticket, CreditCard, Calendar, MessageCircle, Menu, X } from "lucide-react"
+import { Home, Ticket, CreditCard, Calendar, MessageCircle, Menu, X, Globe } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useRouter, usePathname } from "next/navigation"
 import { useState } from "react"
 import Link from "next/link"
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import { Button } from "@/components/ui/button"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 interface DesktopNavigationProps {
   activeTab?: string
@@ -16,9 +22,23 @@ export function DesktopNavigation({ activeTab = "home" }: DesktopNavigationProps
   const router = useRouter()
   const pathname = usePathname()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [currentLanguage, setCurrentLanguage] = useState<"zh-TW" | "en" | "ja" | "ko">("zh-TW")
+
+  const handleLanguageChange = (language: "zh-TW" | "en" | "ja" | "ko") => {
+    setCurrentLanguage(language)
+    // Here you would typically integrate with your i18n system
+    console.log("[v0] Language switched to:", language)
+  }
+
+  const languageOptions = {
+    "zh-TW": "繁體中文",
+    en: "English",
+    ja: "日本語",
+    ko: "한국어",
+  }
 
   const navItems = [
-    { id: "home", label: "首頁", icon: Home, href: "/" },
+    { id: "home", label: "官網首頁", icon: Home, href: "/" },
     { id: "my-tickets", label: "我的車票", icon: Ticket, href: "/my-tickets" },
     { id: "purchase", label: "購票", icon: CreditCard, href: "/purchase/tickets" },
     { id: "reservation", label: "有票劃位", icon: Calendar, href: "/reservation" },
@@ -78,6 +98,43 @@ export function DesktopNavigation({ activeTab = "home" }: DesktopNavigationProps
               )
             })}
           </nav>
+
+          {/* Language Switcher */}
+          <div className="flex items-center">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button
+                  type="button"
+                  className={cn(
+                    "flex items-center space-x-2 px-4 py-2 rounded-md text-sm font-medium transition-colors",
+                    "text-muted-foreground hover:text-foreground hover:bg-muted"
+                  )}
+                >
+                  <Globe className="h-4 w-4" />
+                  <span className="hidden md:inline">{languageOptions[currentLanguage]}</span>
+                  <span className="sr-only md:hidden">切換語系</span>
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="!z-[100]">
+                <DropdownMenuItem onClick={() => handleLanguageChange("zh-TW")}>
+                  {currentLanguage === "zh-TW" && "✓ "}
+                  繁體中文
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => handleLanguageChange("en")}>
+                  {currentLanguage === "en" && "✓ "}
+                  English
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => handleLanguageChange("ja")}>
+                  {currentLanguage === "ja" && "✓ "}
+                  日本語
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => handleLanguageChange("ko")}>
+                  {currentLanguage === "ko" && "✓ "}
+                  한국어
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
 
           {/* Mobile Menu Button */}
           <div className="md:hidden">
