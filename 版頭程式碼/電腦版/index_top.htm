@@ -1,0 +1,529 @@
+{{setReturnByeurlCookie r_byeurl='matching'}} {{*設定會員中心返回首頁網址*}}
+
+<div class="mc_top_box">
+	<div class="mc_top_in">
+        <div class="head_left">
+	
+		<!--logo-->
+		{{if $smarty.get.action == 'index' || ! $smarty.get.action}}
+		<h1 class="mc_logo">{{if $sys_arrWebsite.mbl_web_logo_url}}<a href="{{$sys_arrWebsite.mbl_web_logo_url}}">{{else}}<a href="{{$sys_arrWebsite.website_url}}">{{/if}}<img src="{{$sys_arrWebsite.uploads_url}}{{$sys_arrWebsite.web_logo}}" alt="{{$sys_arrWebsite.web_name}} {{$lang.root.index.19}}" width="200" height="80" border="0" title="{{$sys_arrWebsite.web_name}} {{$lang.root.index.19}}"></a></h1>
+		{{else}}
+		<h2 class="mc_logo">{{if $sys_arrWebsite.mbl_web_logo_url}}<a href="{{$sys_arrWebsite.mbl_web_logo_url}}">{{else}}<a href="{{$sys_arrWebsite.website_url}}">{{/if}}<img src="{{$sys_arrWebsite.uploads_url}}{{$sys_arrWebsite.web_logo}}" alt="{{$sys_arrWebsite.web_name}} {{$lang.root.index.19}}" width="200" height="80" border="0" title="{{$sys_arrWebsite.web_name}} {{$lang.root.index.19}}"></a></h2>
+		{{/if}}
+		
+		<!--menu-->
+		<div class="mc_menu">
+		  <ul>
+			{{section name=i loop=$m_arrWebsiteMenu}}
+			{{getWebMenuByWuidPuid web_uid=$m_arrWebsiteMenu[i].web_uid wmu_p_uid=$m_arrWebsiteMenu[i].uid}}
+			{{assign var="web_menu_key" value=$smarty.section.i.index}}
+			<li id="MENU{{$web_menu_key}}"> <a class="main_menu" href="{{$m_arrWebsiteMenu[i].wmu_url}}" target="{{$m_arrWebsiteMenu[i].wmu_target}}" 
+					accesskey="{{$web_menu_key}}" 
+					title="{{$m_arrWebsiteMenu[i].wmu_name}} Alt+{{$web_menu_key}}"
+					onmouseover="javascript:showWebMenu( {{$web_menu_key}} );" 
+					onfocus="javascript:showWebMenu( {{$web_menu_key}} );"
+					onmouseout="javascript:removeWebMenu( {{$web_menu_key}}, 1000 );"
+					onblur="javascript:removeWebMenu( {{$web_menu_key}}, 1000 );" > {{assign var=subname value=','|explode:$m_arrWebsiteMenu[i].wmu_name}}
+			  {{$subname[0]}} <span style="display:block;">{{$subname[1]}}</span> {{if $smarty.session.isAccessible == "Y"}}
+			  ({{$web_menu_key}})
+			  {{/if}} </a> {{if $m_arrWebsiteMenu_m2}} 
+			  <!-- 展開選單 -->
+			  <div class="menu_open" id="MENU_in{{$web_menu_key}}">
+				<ul class="menu_open_in">
+				  {{section name=y loop=$m_arrWebsiteMenu_m2 start=0 step=1 }}
+				  {{assign var=subname value=','|explode:$m_arrWebsiteMenu_m2[y].wmu_name}}
+				  <li><a href="{{$m_arrWebsiteMenu_m2[y].wmu_url}}" target="{{$m_arrWebsiteMenu_m2[y].wmu_target}}"> {{$subname[0]}}<br/>
+					{{$subname[1]}} </a></li>
+				  {{/section}}
+				</ul>
+			  </div>
+			  {{/if}} 
+			  <!-- 展開選單 end --> 
+			</li>
+			{{/section}}
+		  </ul>
+		</div>
+		</div>
+
+        <div class="head_right">
+		<!--member-->
+		 <ul class="mc_member clearfix">
+			 <!--{{getWebsiteLangByWuid}}
+		 	 {{if $arr_website_lang|@count >1}}
+			 <li class="mc_m_menu02">
+			 {{section name=i loop=$arr_website_lang }}
+		     {{assign var="website_lang" value=$arr_website_lang[i]}} <a id="wl_{{$website_lang.lang_code}}" class="" href="{{$m_inURL1}}&web_lang={{$website_lang.lang_code}}" title="{{$website_lang.lang_name}}" > {{$website_lang.short_name}} </a> {{/section}} 
+			 </li>
+			 {{/if}}-->
+			 
+			 <li class="mc_m_menu01">
+			 {{if $smarty.session.mem_account}}
+				 <!-- <span>{{$sys_arrMember.mem_name}} 您好</span> -->
+			 <a class="login_icon" href="{{$sys_arrMemLib.logout_url}}" title="">{{$lang.root.index.LOGOUT}}</a><!--登出-->
+			 {{else}}
+			 <a href="../member/index.php?action=member_login&r_byeurl={{$sys_arrWebsite.web_byeurl}}&b_action={{$b_actionString|default:index}}" title="">{{$lang.root.index.LOGIN}}</a><!--登入-->
+			 {{/if}}
+         
+			 </li>
+			 <li class="mc_m_menu02">
+				<a href="javascript: void(0);">
+					{{foreach from=$arr_website_lang item=arrLang}}
+						{{if $arrLang.lang_code == $web_lang}}{{$arrLang.short_name}}{{/if}}
+					{{/foreach}}
+				</a>
+			   <ul class="menu02_open" style="display: none;">
+				   {{foreach from=$arr_website_lang item=arrLang}}
+					   <li><a href="{{$m_inURL1}}&web_lang={{$arrLang.lang_code}}">{{$arrLang.short_name}}</a></li>
+				   {{/foreach}}
+			   </ul>
+		   </li>
+		</ul>
+		</div>
+		<!--search-->
+		<!-- <div class="mc_search_btn"><a href="#"><span>{{$lang.root.index.103}}<==搜尋配對==></span></a></div> -->
+		
+		<!-- {{getWebsitePopKeyword num=5}}
+		<div class="mc_keyword"><span>{{$lang.root.product.57}}<==熱門==></span>{{if $arrKeywordsearch}} {{foreach from=$arrKeywordsearch item=i key=k}}<a href="{{$sys_arrWebsite.website_url}}index.php?action=product_search&prod_keyword={{$i}}">{{$i}}</a>{{/foreach}} {{/if}}</div> -->
+	</div>
+	<div class="mc_search_open">
+		<div class="mc_search_open_in">
+
+			<div class="mc_search clearfix">
+			
+                <div class="mc_search01">
+                    <select name="sort_select" id="sort_select">
+						<option value="all">{{$lang.root.index.104}}<!--全部--></option>
+						{{getProductSort prod_sort_p_uid=0 sort=1}}
+						{{assign var=now value=$smarty.now|date_format:"%Y/%m/%d %H:%M:%S"}}
+						{{section name=i loop=$m_arrProductSort1}}
+						<!--第一層分類判斷時間-->
+						{{if (strtotime($now) >= strtotime($m_arrProductSort1[i].prod_sort_sdate)) && (strtotime($now) <= strtotime($m_arrProductSort1[i].prod_sort_edate)) }}
+							<OPTGROUP label="{{$m_arrProductSort1[i].prod_sort_name}}">
+							<!--第二層分類-->
+							{{getProductSort prod_sort_p_uid=$m_arrProductSort1[i].prod_sort_uid sort=2}}
+							{{if $m_arrProductSort2}}
+										{{section name=j loop=$m_arrProductSort2}}
+										<!--第二層分類判斷時間-->
+										{{if (strtotime($now) >= strtotime($m_arrProductSort2[j].prod_sort_sdate)) && (strtotime($now) <= strtotime($m_arrProductSort2[j].prod_sort_edate)) }}
+												<option value="{{$m_arrProductSort2[j].prod_sort_name}}">{{$m_arrProductSort2[j].prod_sort_name}}</option>
+												<!--第三層分類-->
+												{{getProductSort prod_sort_p_uid=$m_arrProductSort2[j].prod_sort_uid sort=3}}
+												{{if $m_arrProductSort3}}
+												{{section name=m loop=$m_arrProductSort3}}
+												<!--第三層分類判斷時間-->
+												{{if (strtotime($now) >= strtotime($m_arrProductSort3[m].prod_sort_sdate)) && (strtotime($now) <= strtotime($m_arrProductSort3[m].prod_sort_edate)) }}
+												<option value="{{$m_arrProductSort3[m].prod_sort_name}}">{{$m_arrProductSort3[m].prod_sort_name}}</option>
+												{{/if}}
+												{{/section}}
+												{{/if}}
+												<!--第三層分類結束-->
+										{{/if}}
+										{{/section}}
+							{{/if}}
+							<!--第二層分類結束-->
+						{{/if}}
+							</OPTGROUP>
+						{{/section}}
+						<!--第一層分類結束-->
+                    </select><input id="keyword" autocomplete="off" type="text" value="" placeholder="Search..." title="請輸入商品關鍵字"/></div>
+				<div class="mc_search02"><input id="button_search" type="button" title="搜尋" /></div>
+		  	</div>
+ 	   		<span class="mc_search_close"></span>
+  	    </div>
+    </div>
+</div>
+
+<script>
+	$(".mc_m_menu02").hover(function(){
+		$(".menu02_open").stop().slideToggle();
+	});
+</script>
+<script>
+//抓網址get變數
+function getQueryParams(qs) {
+    qs = qs.split("+").join(" ");
+    var params = [],
+        tokens,
+        re = /[?&]?([^=]+)=([^&]*)/g;
+    while (tokens = re.exec(qs)) {
+        params[decodeURIComponent(tokens[1])] = decodeURIComponent(tokens[2]);
+    }
+    return params;
+}
+var _GET = getQueryParams(document.location.search);//網址get變數
+//版頭購物車
+$(function(){
+	if (_GET['action'] != "shopping_checkout_2" && _GET['action'] != "shopping_checkout_3"){
+		$(".mg_Shoppingcart").hover(
+			function(){
+				$(".MemMenu_Cart").stop(true, true).slideDown(300);
+			},function(){
+				$(".MemMenu_Cart").stop().slideUp(300);
+			}
+		);
+	}
+});
+$(function(){
+	$("#button_search").click(function(){
+	    // if (!$("#keyword").val()) {
+	    //     alert('請輸入關鍵字');
+		// } else {
+            prod_search();
+		// }
+	});
+	$('#keyword').keypress(function(event){
+		if(event.keyCode == 13){
+			prod_search($(this).val());
+		}
+	});
+});
+
+
+$('#keyword').val(_GET['prod_keyword']);
+
+//auto complete
+function autocomplete(inp) {
+    arr=[];
+    /*the autocomplete function takes two arguments,
+    the text field element and an array of possible autocompleted values:*/
+    var currentFocus;
+    /*execute a function when someone writes in the text field:*/
+    inp.addEventListener("input", function(e) {
+        var a, b, i, val = this.value;
+        /*close any already open lists of autocompleted values*/
+        closeAllLists();
+        if (!val) { return false;}
+        $.ajax({
+            url: "{{$sys_arrWebsite.website_url}}api/api.ESAutoComplete.php",
+            dataType: "json",
+            type: "POST",
+            async: true,
+            data: {
+                key_word:val
+            },
+            success: function(msg){
+                console.log(msg.data);
+                console.log(msg.data.length);
+                if (msg.data.length==0){
+                    return false;
+				}
+
+
+				type=2;
+				if (type==1){
+                    $.each(msg.data,function(key,value){
+                        data_splite=value.split("|");
+                        $.each(data_splite,function(key_splite,value_splite){
+                            if(value_splite) {
+                                if(arr.indexOf(value_splite)==-1){
+                                    arr.push(value_splite);
+                                    console.log(value_splite);
+                                }
+                            }
+                        })
+                    });
+
+                    currentFocus = -1;
+                    /*create a DIV element that will contain the items (values):*/
+                    a = document.createElement("DIV");
+                    a.setAttribute("id", inp.id + "autocomplete-list");
+                    a.setAttribute("class", "autocomplete-items");
+                    /*append the DIV element as a child of the autocomplete container:*/
+                    inp.parentNode.appendChild(a);
+                    /*for each item in the array...*/
+                    for (i = 0; i < arr.length; i++) {
+                        /*check if the item starts with the same letters as the text field value:*/
+                        if (arr[i].substr(0, val.length).toUpperCase() == val.toUpperCase()) {
+                            /*create a DIV element for each matching element:*/
+                            b = document.createElement("DIV");
+                            /*make the matching letters bold:*/
+                            b.innerHTML = "<strong>" + arr[i].substr(0, val.length) + "</strong>";
+                            b.innerHTML += arr[i].substr(val.length);
+                            /*insert a input field that will hold the current array item's value:*/
+                            b.innerHTML += "<input type='hidden' value='" + arr[i] + "'>";
+                            /*execute a function when someone clicks on the item value (DIV element):*/
+                            b.addEventListener("click", function(e) {
+                                /*insert the value for the autocomplete text field:*/
+                                inp.value = this.getElementsByTagName("input")[0].value;
+                                /*close the list of autocompleted values,
+                                (or any other open lists of autocompleted values:*/
+                                closeAllLists();
+                            });
+                            a.appendChild(b);
+                        }
+                    }
+
+                }else{
+                    currentFocus = -1;
+                    /*create a DIV element that will contain the items (values):*/
+                    a = document.createElement("DIV");
+                    a.setAttribute("id", inp.id + "autocomplete-list");
+                    a.setAttribute("class", "autocomplete-items");
+                    /*append the DIV element as a child of the autocomplete container:*/
+                    inp.parentNode.appendChild(a);
+
+				    $.each(msg.data,function(key,value){
+                        data_splite=value.split("|");
+                        $.each(data_splite,function(key_splite,value_splite){
+                            if(value_splite) {
+                                    b = document.createElement("DIV");
+                                    /*make the matching letters bold:*/
+                                    b.innerHTML += value_splite;
+                                    /*insert a input field that will hold the current array item's value:*/
+                                    b.innerHTML += "<input type='hidden' value='" + value_splite+ "'>";
+                                    /*execute a function when someone clicks on the item value (DIV element):*/
+                                    b.addEventListener("click", function(e) {
+                                        /*insert the value for the autocomplete text field:*/
+                                        inp.value = this.getElementsByTagName("input")[0].value;
+                                        /*close the list of autocompleted values,
+                                        (or any other open lists of autocompleted values:*/
+                                        closeAllLists();
+                                    });
+                                    a.appendChild(b);
+
+
+                                    arr.push(value_splite);
+                                    console.log(value_splite);
+                            }
+                        })
+                    });
+                }
+            }
+        });
+    });
+    /*execute a function presses a key on the keyboard:*/
+    inp.addEventListener("keydown", function(e) {
+        var x = document.getElementById(this.id + "autocomplete-list");
+        if (x) x = x.getElementsByTagName("div");
+        if (e.keyCode == 40) {
+            /*If the arrow DOWN key is pressed,
+            increase the currentFocus variable:*/
+            currentFocus++;
+            /*and and make the current item more visible:*/
+            addActive(x);
+        } else if (e.keyCode == 38) { //up
+            /*If the arrow UP key is pressed,
+            decrease the currentFocus variable:*/
+            currentFocus--;
+            /*and and make the current item more visible:*/
+            addActive(x);
+        } else if (e.keyCode == 13) {
+            /*If the ENTER key is pressed, prevent the form from being submitted,*/
+            e.preventDefault();
+            if (currentFocus > -1) {
+                /*and simulate a click on the "active" item:*/
+                if (x) x[currentFocus].click();
+            }
+            prod_search();
+        }
+    });
+    function addActive(x) {
+        /*a function to classify an item as "active":*/
+        if (!x) return false;
+        /*start by removing the "active" class on all items:*/
+        removeActive(x);
+        if (currentFocus >= x.length) currentFocus = 0;
+        if (currentFocus < 0) currentFocus = (x.length - 1);
+        /*add class "autocomplete-active":*/
+        x[currentFocus].classList.add("autocomplete-active");
+    }
+    function removeActive(x) {
+        /*a function to remove the "active" class from all autocomplete items:*/
+        for (var i = 0; i < x.length; i++) {
+            x[i].classList.remove("autocomplete-active");
+        }
+    }
+    function closeAllLists(elmnt) {
+        /*close all autocomplete lists in the document,
+        except the one passed as an argument:*/
+        var x = document.getElementsByClassName("autocomplete-items");
+        for (var i = 0; i < x.length; i++) {
+            if (elmnt != x[i] && elmnt != inp) {
+                x[i].parentNode.removeChild(x[i]);
+            }
+        }
+    }
+    /*execute a function when someone clicks in the document:*/
+    document.addEventListener("click", function (e) {
+        closeAllLists(e.target);
+    });
+}
+
+/*An array containing all the country names in the world:*/
+var countries = [];
+
+/*initiate the autocomplete function on the "myInput" element, and pass along the countries array as possible autocomplete values:*/
+autocomplete(document.getElementById("keyword"), countries);
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+function prod_search(Kw){
+	var keyword ;
+	if (Kw){
+		keyword = Kw ;
+	}else{
+		keyword = $("#keyword").val();
+	}
+    var sort_name ;
+    sort_name = $("#sort_select").val();
+	
+    if(sort_name=="all"){
+		//alert('{{$sys_arrWebsite.web_logo_url}}index.php?action=product_search&prod_keyword='+keyword); return false;
+        window.location.href = '{{$sys_arrWebsite.web_logo_url}}index.php?action=product_search&prod_keyword='+keyword;
+	}else{
+        window.location.href = '{{$sys_arrWebsite.web_logo_url}}index.php?action=product_search&prod_keyword='+keyword+"&sort_name_ls="+sort_name;
+	}
+}
+function headtop_removeScar( uid ){
+	$.ajax({
+		url:"/{{$sys_arrWebsite.web_byeurl}}/api/api.shopping_cart.php",
+		type: "POST",
+		dataType: "json",
+		data: {myAct:"removeScarByUid",
+			   uid: uid,
+               {{$nocsrfTokenId}} : '{{$nocsrfToken}}'
+		},
+		success: function(Jdata){
+			if(Jdata.error=='C00'){
+				top_refresh();
+			}
+		}
+	});
+}
+function top_refresh(_scar_no)
+{
+	if(_scar_no==null)
+		var _scar_no = "{{if $sys_arrSCO.scar_no}}{{$sys_arrSCO.scar_no}}{{else}}{{$it45_scar_no}}{{/if}}";
+
+	$.ajax({
+		url: "/{{$sys_arrWebsite.web_byeurl}}/api/api.shopping_cart.php",
+		type: "POST",
+		dataType: "json",
+		data: {myAct:"getCartNumber",
+               {{$nocsrfTokenId}} : '{{$nocsrfToken}}'
+		},
+		success: function(Jdata){
+			if( Jdata.error == 'C00' ){
+				$('#top_content').empty();
+				var html='';
+				var count = 0;
+					$.each( Jdata.content, function( key, value ) {
+						var top_str = "";
+						if(value['scar_type']==1)
+							top_str = "(加贈)";
+						if(value['scar_type']==2)
+							top_str = "(加購)";
+						html +='<ul class="MemMenu_Product clearfix" id="'+value['uid']+'">';
+						html +='<li class="Cart_Pimg"><a href="index.php?action=product_detail&prod_no='+value['prod_no']+'" class="mycart-img"><img border="0" alt="'+value["prod_name"]+'" title="'+value["prod_name"]+'" src="'+value['prod_file']+'"></a></li>';
+						html +='<li class="Cart_Pname">';
+						html +='<h2><a href="index.php?action=product_detail&prod_no='+value['prod_no']+'" title="'+value["prod_name"]+'">'+value["prod_name"]+top_str+'</a></h2>';
+						html +="<p>{{getWebColsName idx='prod_currency_unit'}}"+value['scar_price']+'<span>x'+value['scar_count']+'</span></p>';
+						html +='</li>';
+						if(value['scar_type'] != 1)
+							html +='<li class="Cart_Pdelete"><a href="javascript:void(0);" title="刪除" onClick="javascript:headtop_removeScar( '+value['uid']+' );">刪除</a></li>';
+						html +="</ul>";
+						count = count+parseInt(value['scar_count']);
+					});
+					html +='<div class="MemMenu_Product_total">';
+					html +='<p>{{$lang.root.shopping_cart.5}}:<span id="Cart_Total">$'+Jdata.total+'</span></p>';/*總計*/
+					html +='<a href="/penghufuneasy/index.php?action=shopping_cart" title="結帳">{{$lang.root.shopping_cart.6}}</a></div>';/*結帳*/
+				$('#top_content').append(html);
+				$('#Cart_Total').html(count);
+				$('#Cart_Count').html(count+"件商品");
+
+                if (typeof top_refresh_authority === 'function') {
+                    top_refresh_authority();
+                }
+			}
+		}
+	})
+}
+top_refresh();
+/*下拉選單*/
+	
+$(function(){
+	$(".mc_menu > ul > li").hover(
+		function(){
+			var N = this.id.substr(4);
+			$("#MENU_in"+N).stop(true, true).slideToggle(300);
+	});
+});
+
+	
+/*選單平分寬度*/
+$(function(){
+var MENU_W = 100;
+var LIST_N = $(".mc_menu > ul > li").length;
+var LIST_W = MENU_W / LIST_N + "%";
+$(".mc_menu > ul > li").css({ width:LIST_W});
+});
+
+
+$(function(){
+  $(".mc_search_btn a").click(function(){
+  $(".mc_search_open").slideDown();
+  });
+	
+  $(".mc_search_close").click(function(){
+  $(".mc_search_open").slideUp();
+  });
+});
+
+
+
+</script>
+
+<style>
+	.autocomplete {
+		position: relative;
+		display: inline-block;
+	}
+
+	/*input {
+		border: 1px solid transparent;
+		background-color: #f1f1f1;
+		padding: 10px;
+		font-size: 16px;
+	}
+
+	input[type=text] {
+		background-color: #f1f1f1;
+		width: 100%;
+	}
+
+	input[type=submit] {
+		background-color: DodgerBlue;
+		color: #fff;
+		cursor: pointer;
+	}*/
+
+	.autocomplete-items {
+		position: absolute;
+		border: 1px solid #d4d4d4;
+		border-bottom: none;
+		border-top: none;
+		z-index: 99;
+		/*position the autocomplete items to be the same width as the container:*/
+		top: 100%;
+		left: 0;
+		right: 0;
+	}
+
+	.autocomplete-items div {
+		padding: 10px;
+		cursor: pointer;
+		background-color: #fff;
+		border-bottom: 1px solid #d4d4d4;
+	}
+
+	/*when hovering an item:*/
+	.autocomplete-items div:hover {
+		background-color: #e9e9e9;
+	}
+
+	/*when navigating through the items using the arrow keys:*/
+	.autocomplete-active {
+		background-color: DodgerBlue !important;
+		color: #ffffff;
+	}
+</style>

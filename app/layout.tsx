@@ -28,7 +28,7 @@ export default function RootLayout({
         <Suspense fallback={<div>Loading...</div>}>
           <FavoritesProvider>
             <HeaderWithMenu />
-            <div className="min-h-screen bg-background">{children}</div>
+            <div className="min-h-screen bg-background pt-20 md:pt-24">{children}</div>
           </FavoritesProvider>
         </Suspense>
       </body>
