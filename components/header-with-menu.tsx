@@ -212,12 +212,12 @@ export function HeaderWithMenu({ title }: HeaderWithMenuProps) {
   return (
     <>
       <header className="fixed inset-x-0 top-0 z-50 flex justify-center bg-white shadow-sm">
-        <div className="hidden xl:flex h-[80px] w-[1280px] items-center justify-between px-6">
+        <div className="hidden xl:flex h-[60px] w-[1280px] items-center justify-between px-6">
           <Link href="/" className="flex items-center gap-3">
             <img
               src="/images/penghu-logo.png"
               alt="Like 澎湖 - 台灣好行"
-              className="h-[80px] w-auto object-contain"
+              className="h-[60px] w-auto object-contain"
             />
           </Link>
 
@@ -266,14 +266,14 @@ export function HeaderWithMenu({ title }: HeaderWithMenuProps) {
                     onClick={() => handleNavigation(item.href)}
                     // 確保字級與橫向間距貼近舊版電腦版設計，維持 16px 字級與 30px 水平內距。
                     className={cn(
-                      "group relative flex h-full w-full items-center justify-center px-[20px] text-[16px] font-semibold tracking-[0.1em] text-[#222222] transition-colors",
+                      "group relative flex h-full w-full items-center justify-center px-[18px] text-[16px] font-semibold tracking-[0.1em] text-[#222222] transition-colors",
                       allowHoverColor ? "hover:text-[#ec561b]" : "",
                     )}
                   >
                     <span className="pointer-events-none">{item.label}</span>
                     <span
                       className={cn(
-                        "pointer-events-none absolute bottom-6 left-1/2 h-[3px] w-[60%] -translate-x-1/2 transition-colors",
+                        "pointer-events-none absolute bottom-4 left-1/2 h-[3px] w-[60%] -translate-x-1/2 transition-colors",
                         underlineActive
                           ? "bg-[#ec561b]"
                           : allowHoverUnderline
@@ -406,7 +406,7 @@ export function HeaderWithMenu({ title }: HeaderWithMenuProps) {
         </div>
 
         {/* Mobile Header */}
-        <div className="grid h-[80px] w-full max-w-[1280px] grid-cols-[auto_1fr_auto] items-center px-4 xl:hidden">
+        <div className="grid h-[60px] w-full max-w-[1280px] grid-cols-[auto_1fr_auto] items-center px-4 xl:hidden">
           <span
             role="button"
             tabIndex={0}
@@ -419,9 +419,9 @@ export function HeaderWithMenu({ title }: HeaderWithMenuProps) {
                 toggleMobileMenu()
               }
             }}
-            className="group inline-flex h-12 w-12 cursor-pointer items-center justify-center"
+            className="group inline-flex h-8 w-8 cursor-pointer items-center justify-center"
           >
-            <HamburgerIcon className="h-12 w-12 text-[#1690aa]" />
+            <HamburgerIcon className="h-8 w-8 text-[#1690aa]" />
           </span>
 
           <div className="flex justify-center">
@@ -432,7 +432,7 @@ export function HeaderWithMenu({ title }: HeaderWithMenuProps) {
                 <img
                   src="/images/penghu-logo.png"
                   alt="Like 澎湖 - 台灣好行"
-                  className="h-[80px] w-auto object-contain"
+                  className="h-[60px] w-auto object-contain"
                 />
               </Link>
             )}
@@ -485,27 +485,29 @@ export function HeaderWithMenu({ title }: HeaderWithMenuProps) {
             </div>
             <div className="mx-5 mt-3 border-t border-[#d5dde4]" />
 
-            <div className="flex-1 overflow-y-auto px-5 pt-2 text-sm font-medium">
-              <div className="space-y-4">
+            <div className="flex-1 overflow-y-auto text-sm font-medium">
+              <div>
                 {navItems.map((item) => {
                   const hasSubItems = (item.dropdown?.items?.length ?? 0) > 0
                   const isExpanded = expandedMobileMenus[item.id]
 
                   return (
-                    <div key={item.id} className="py-2">
+                    <div key={item.id}>
                       <button
                         type="button"
                         onClick={() =>
                           hasSubItems ? toggleMobileSubmenu(item.id) : handleNavigation(item.href)
                         }
-                        className="flex w-full items-center justify-between text-left tracking-[0.04em]"
+                        className={cn("flex w-full items-center justify-between text-left tracking-[0.04em] px-[1em]",
+                          isExpanded ? "bg-[#3f3a39] text-white" : "")
+                        }
                       >
-                        <span>{item.label}</span>
+                        <span className="leading-[50px]">{item.label}</span>
                         {hasSubItems ? (
                           <ChevronRight
                             className={cn(
-                              "h-5 w-5 text-[#3f3a39] transition-transform",
-                              isExpanded ? "rotate-90" : "",
+                              "h-5 w-5 transition-transform",
+                              isExpanded ? "rotate-90 text-[#ffffff]" : "text-[#3f3a39]",
                             )}
                           />
                         ) : null}
@@ -514,31 +516,32 @@ export function HeaderWithMenu({ title }: HeaderWithMenuProps) {
                       {hasSubItems ? (
                         <div
                           className={cn(
-                            "overflow-hidden pl-3 transition-[max-height]",
+                            "overflow-hidden transition-[max-height]",
                             isExpanded
                               ? "max-h-96 duration-[800ms] ease-in-out"
                               : "max-h-0 duration-[300ms] ease-out",
                           )}
                         >
-                          <div className="mt-3 space-y-2 rounded-[12px] bg-[#f4f9fb] p-3 text-sm">
+                          <div className="bg-[#ede6e2] text-[14px]">
                             {item.dropdown?.items?.map((subItem, index) => (
-                              <button
-                                key={`${item.id}-mobile-${index}`}
-                                type="button"
-                                onClick={() => handleNavigation(subItem.href)}
-                                className="flex w-full flex-col items-start rounded-[8px] px-3 py-2 text-left text-[#0f859d] transition hover:bg-white"
-                              >
-                                {subItem.lines.map((line, lineIndex) => (
-                                  <span
-                                    key={`${item.id}-mobile-${index}-${lineIndex}`}
-                                    className={cn(
-                                      lineIndex === 0 ? "font-semibold" : "text-xs text-[#6b7a8c]",
-                                    )}
-                                  >
-                                    {line}
-                                  </span>
-                                ))}
-                              </button>
+                              <>
+                                <button
+                                  key={`${item.id}-mobile-${index}`}
+                                  type="button"
+                                  onClick={() => handleNavigation(subItem.href)}
+                                  className="flex w-full flex-col items-start rounded-[8px] px-[25px] py-[7px] transition hover:bg-white"
+                                >
+                                  {subItem.lines.map((line, lineIndex) => (
+                                    <span
+                                      key={`${item.id}-mobile-${index}-${lineIndex}`}
+                                      className="leading-[50px]"
+                                    >
+                                      {line}
+                                    </span>
+                                  ))}
+                                </button>
+                                <div className="h-[2px] bg-white" />
+                              </>
                             ))}
                           </div>
                         </div>
