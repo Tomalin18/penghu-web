@@ -221,7 +221,7 @@ export function HeaderWithMenu({ title }: HeaderWithMenuProps) {
             />
           </Link>
 
-          <nav className="flex h-full flex-1 items-stretch justify-center gap-1 px-2 xl:px-4 2xl:px-6">
+          <nav className="flex h-full flex-1 items-stretch justify-center gap-0.5 px-2 xl:px-4 2xl:px-6">
             {navItems.map((item) => {
               const dropdown = item.dropdown
               const showDropdown = Boolean(dropdown)
@@ -255,7 +255,7 @@ export function HeaderWithMenu({ title }: HeaderWithMenuProps) {
               return (
                 <div
                   key={item.id}
-                  className="relative flex flex-1 items-center justify-center"
+                  className="relative flex items-center justify-center"
                   onMouseEnter={handleMouseEnter}
                   onMouseLeave={handleMouseLeave}
                   onFocusCapture={handleFocus}
@@ -266,7 +266,7 @@ export function HeaderWithMenu({ title }: HeaderWithMenuProps) {
                     onClick={() => handleNavigation(item.href)}
                     // 確保字級與橫向間距貼近舊版電腦版設計，維持 16px 字級與 30px 水平內距。
                     className={cn(
-                      "group relative flex h-full w-full items-center justify-center px-[30px] text-[16px] font-semibold tracking-[0.1em] text-[#222222] transition-colors",
+                      "group relative flex h-full w-full items-center justify-center px-[20px] text-[16px] font-semibold tracking-[0.1em] text-[#222222] transition-colors",
                       allowHoverColor ? "hover:text-[#ec561b]" : "",
                     )}
                   >
