@@ -1,17 +1,14 @@
 "use client"
 
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo, useState, type KeyboardEvent } from "react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
-import { Globe, Menu, UserRound, ChevronRight, ChevronLeft, X } from "lucide-react"
+import { ChevronRight, X } from "lucide-react"
 
-import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 
 interface HeaderWithMenuProps {
   title?: string
-  showBackButton?: boolean
-  onBack?: () => void
 }
 
 type SubNavItem = {
@@ -32,8 +29,8 @@ type NavItem = {
   dropdown?: NavDropdown
 }
 
+// 為了符合舊版電腦版版頭的字級與間距需求，移除「官網首頁」並將後續項目維持在同一組設定內。
 const navItems: NavItem[] = [
-  { id: "home", label: "官網首頁", href: "/" },
   {
     id: "my-tickets",
     label: "我的車票",
@@ -113,7 +110,37 @@ const languageOptions: Record<LanguageCode, string> = {
   "zh-CN": "简",
 }
 
-export function HeaderWithMenu({ title, showBackButton = true, onBack }: HeaderWithMenuProps) {
+const HamburgerIcon = ({ className, ...props }: React.SVGProps<SVGSVGElement>) => (
+  <svg
+    viewBox="0 0 32 24"
+    aria-hidden="true"
+    focusable="false"
+    className={className}
+    {...props}
+  >
+    <rect
+      x="6"
+      y="4"
+      width="20"
+      height="2.5"
+      rx="1.25"
+      fill="currentColor"
+      className="origin-center transition-transform duration-200 ease-out group-hover:-translate-y-[1.5px]"
+    />
+    <rect x="6" y="10.75" width="20" height="2.5" rx="1.25" fill="currentColor" />
+    <rect
+      x="6"
+      y="17.5"
+      width="20"
+      height="2.5"
+      rx="1.25"
+      fill="currentColor"
+      className="origin-center transition-transform duration-200 ease-out group-hover:translate-y-[1.5px]"
+    />
+  </svg>
+)
+
+export function HeaderWithMenu({ title }: HeaderWithMenuProps) {
   const router = useRouter()
   const pathname = usePathname()
   const [currentLanguage, setCurrentLanguage] = useState<LanguageCode>("zh-TW")
@@ -137,7 +164,7 @@ export function HeaderWithMenu({ title, showBackButton = true, onBack }: HeaderW
       return pathname === item.href || pathname.startsWith(`${item.href}/`)
     })
 
-    return matched?.id ?? "home"
+    return matched?.id ?? ""
   }, [pathname])
 
   const handleNavigation = (href?: string) => {
@@ -157,14 +184,6 @@ export function HeaderWithMenu({ title, showBackButton = true, onBack }: HeaderW
     setMobileMenuOpen(false)
     setExpandedMobileMenus({})
     setLanguageOpen(false)
-  }
-
-  const handleBack = () => {
-    if (onBack) {
-      onBack()
-    } else {
-      router.back()
-    }
   }
 
   const handleLanguageChange = (language: LanguageCode) => {
@@ -192,13 +211,13 @@ export function HeaderWithMenu({ title, showBackButton = true, onBack }: HeaderW
 
   return (
     <>
-      <header className="fixed inset-x-0 top-0 z-50 bg-white shadow-sm">
-        <div className="hidden xl:flex h-20 items-center justify-between pl-6 pr-4 2xl:pl-10 2xl:pr-8">
+      <header className="fixed inset-x-0 top-0 z-50 flex justify-center bg-white shadow-sm">
+        <div className="hidden xl:flex h-[80px] w-[1280px] items-center justify-between px-6">
           <Link href="/" className="flex items-center gap-3">
             <img
               src="/images/penghu-logo.png"
               alt="Like 澎湖 - 台灣好行"
-              className="h-16 w-auto object-contain"
+              className="h-[80px] w-auto object-contain"
             />
           </Link>
 
@@ -209,6 +228,8 @@ export function HeaderWithMenu({ title, showBackButton = true, onBack }: HeaderW
               const showPin = Boolean(dropdown && (dropdown.showPinOnly || (dropdown.items?.length ?? 0) > 0))
               const showList = Boolean(dropdown?.items?.length)
               const underlineActive = item.alwaysUnderline || activeNavId === item.id
+              const allowHoverUnderline = !["my-tickets", "purchase", "reservation", "traffic", "search", "service"].includes(item.id)
+              const allowHoverColor = allowHoverUnderline
               const isHovered = hoveredMenu === item.id
 
               const handleMouseEnter = () => {
@@ -243,17 +264,21 @@ export function HeaderWithMenu({ title, showBackButton = true, onBack }: HeaderW
                   <button
                     type="button"
                     onClick={() => handleNavigation(item.href)}
+                    // 確保字級與橫向間距貼近舊版電腦版設計，維持 16px 字級與 30px 水平內距。
                     className={cn(
-                      "group relative flex w-full items-center justify-center px-2 py-4 text-[11px] font-semibold tracking-wide text-[#222222] transition-colors",
-                      "hover:text-[#ec561b]",
-                      "xl:px-3 xl:py-4 xl:text-[12px] 2xl:px-5 2xl:py-5 2xl:text-sm",
+                      "group relative flex h-full w-full items-center justify-center px-[30px] text-[16px] font-semibold tracking-[0.1em] text-[#222222] transition-colors",
+                      allowHoverColor ? "hover:text-[#ec561b]" : "",
                     )}
                   >
                     <span className="pointer-events-none">{item.label}</span>
                     <span
                       className={cn(
-                        "pointer-events-none absolute bottom-3 left-1/2 h-[3px] w-[60%] -translate-x-1/2 transition-colors",
-                        underlineActive ? "bg-[#ec561b]" : "bg-transparent group-hover:bg-[#ec561b]",
+                        "pointer-events-none absolute bottom-6 left-1/2 h-[3px] w-[60%] -translate-x-1/2 transition-colors",
+                        underlineActive
+                          ? "bg-[#ec561b]"
+                          : allowHoverUnderline
+                            ? "bg-transparent group-hover:bg-[#ec561b]"
+                            : "bg-transparent",
                       )}
                     />
                   </button>
@@ -323,24 +348,34 @@ export function HeaderWithMenu({ title, showBackButton = true, onBack }: HeaderW
             })}
           </nav>
 
-          <div className="ml-3 flex h-full items-center bg-[#1690aa] pl-4 pr-2 text-white xl:ml-4 xl:pl-4 xl:pr-2 2xl:ml-5 2xl:pl-5 2xl:pr-3">
-            <UserRound className="mr-2 h-5 w-5 text-white" />
-            <button
-              type="button"
-              onClick={() => setIsLoggedIn((prev) => !prev)}
-              className="text-sm font-semibold transition hover:text-gray-100"
-            >
-              {isLoggedIn ? "登出" : "登入"}
-            </button>
-            <span className="mx-3 h-4 w-px bg-white/40" />
+          <div className="ml-auto flex h-full items-center bg-[#1690aa] text-white">
+            <div className="flex items-center gap-2 pl-2">
+              <img
+                src="/images/icons/top_login.png"
+                alt="登入"
+                className="mr-1 h-4 w-4 object-contain"
+              />
+              <button
+                type="button"
+                onClick={() => setIsLoggedIn((prev) => !prev)}
+                className="text-sm font-semibold transition hover:text-gray-100"
+              >
+                {isLoggedIn ? "登出" : "登入"}
+              </button>
+            </div>
+            <span className="mx-2 h-4 w-px bg-white/40" />
             <div
-              className="relative flex h-full w-[70px] cursor-pointer items-center justify-center transition hover:bg-white/10 xl:w-[76px] 2xl:w-[96px]"
+              className="relative flex h-full min-w-[70px] cursor-pointer items-center justify-center px-2 transition hover:bg-white/10"
               onMouseEnter={() => setLanguageOpen(true)}
               onMouseLeave={() => setLanguageOpen(false)}
               onClick={() => setLanguageOpen((prev) => !prev)}
             >
               <div className="flex items-center gap-2 text-sm font-semibold text-white">
-                <Globe className="h-4 w-4" />
+                <img
+                  src="/images/icons/top_global.png"
+                  alt="語系"
+                  className="h-4 w-4 object-contain"
+                />
                 <span>{languageOptions[currentLanguage]}</span>
               </div>
               <div
@@ -357,7 +392,7 @@ export function HeaderWithMenu({ title, showBackButton = true, onBack }: HeaderW
                     type="button"
                     onClick={() => handleLanguageChange(value as LanguageCode)}
                     className={cn(
-                      "flex w-full items-center justify-center px-4 py-2 text-sm font-medium transition hover:bg-[#1eacca]",
+                      "flex w-full items-center justify-center px-3 py-1.5 text-[16px] font-medium transition hover:bg-[#1eacca]",
                       languageOpen ? "duration-[800ms] ease-in-out" : "duration-[300ms] ease-out",
                       currentLanguage === value ? "bg-[#1eacca]" : "",
                     )}
@@ -371,16 +406,25 @@ export function HeaderWithMenu({ title, showBackButton = true, onBack }: HeaderW
         </div>
 
         {/* Mobile Header */}
-        <div className="flex h-16 items-center justify-between px-4 xl:hidden">
-          <div className="flex items-center gap-2">
-            {showBackButton && (
-              <Button variant="ghost" size="icon" className="rounded-full" onClick={handleBack}>
-                <ChevronLeft className="h-5 w-5" />
-              </Button>
-            )}
-          </div>
+        <div className="grid h-[80px] w-full max-w-[1280px] grid-cols-[auto_1fr_auto] items-center px-4 xl:hidden">
+          <span
+            role="button"
+            tabIndex={0}
+            aria-label="開啟選單"
+            aria-expanded={mobileMenuOpen}
+            onClick={toggleMobileMenu}
+            onKeyDown={(event: KeyboardEvent<HTMLSpanElement>) => {
+              if (event.key === "Enter" || event.key === " ") {
+                event.preventDefault()
+                toggleMobileMenu()
+              }
+            }}
+            className="group inline-flex h-12 w-12 cursor-pointer items-center justify-center"
+          >
+            <HamburgerIcon className="h-12 w-12 text-[#1690aa]" />
+          </span>
 
-          <div className="flex flex-1 justify-center">
+          <div className="flex justify-center">
             {title ? (
               <h1 className="text-base font-semibold tracking-wide text-slate-700">{title}</h1>
             ) : (
@@ -388,17 +432,13 @@ export function HeaderWithMenu({ title, showBackButton = true, onBack }: HeaderW
                 <img
                   src="/images/penghu-logo.png"
                   alt="Like 澎湖 - 台灣好行"
-                  className="h-12 w-auto object-contain"
+                  className="h-[80px] w-auto object-contain"
                 />
               </Link>
             )}
           </div>
 
-          <div className="flex items-center gap-2">
-            <Button variant="ghost" size="icon" className="rounded-full" onClick={toggleMobileMenu}>
-              <Menu className="h-5 w-5" />
-            </Button>
-          </div>
+          <div />
         </div>
       </header>
       {/* Mobile Menu */}
@@ -410,48 +450,61 @@ export function HeaderWithMenu({ title, showBackButton = true, onBack }: HeaderW
             aria-label="關閉選單"
             onClick={toggleMobileMenu}
           />
-          <div className="absolute inset-y-0 left-0 flex h-full w-[82vw] max-w-sm flex-col bg-[#1690aa] text-white shadow-2xl">
-            <div className="flex items-center justify-between border-b border-white/15 px-4 py-4">
-              <span className="text-lg font-semibold tracking-wide">主選單</span>
-              <button
-                type="button"
-                onClick={toggleMobileMenu}
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-white/40 text-white transition hover:border-white hover:bg-white/10"
-              >
-                <X className="h-5 w-5" />
-              </button>
+          <div className="absolute inset-y-0 left-0 flex h-full w-[320px] flex-col bg-white text-[#3f3a39] shadow-2xl">
+            <button
+              type="button"
+              onClick={toggleMobileMenu}
+              className="absolute left-full top-4 ml-3 inline-flex h-10 w-10 items-center justify-center text-white transition hover:text-white/80"
+              aria-label="關閉選單"
+            >
+              <X className="h-6 w-6 font-bold" strokeWidth={3} />
+            </button>
+
+            <div className="px-5 pt-6">
+              <div className="flex gap-2 pb-1 text-sm font-semibold">
+                {Object.entries(languageOptions).map(([value, label]) => (
+                  <button
+                    key={value}
+                    type="button"
+                    onClick={() => handleLanguageChange(value as LanguageCode)}
+                    className={cn(
+                      "flex-1 rounded-[6px] px-0 py-[6px] text-white transition",
+                      currentLanguage === value
+                        ? "bg-[#0f859d]"
+                        : "bg-[#0c90af] hover:bg-[#11a6c8]",
+                    )}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
             </div>
 
-            <div className="flex-1 overflow-y-auto px-3 py-4">
-              <div className="space-y-2">
+            <div className="mt-4 px-5 pt-2 text-sm font-semibold">
+              <span className="tracking-[0.3em] text-[#191d63]">MENU</span>
+            </div>
+            <div className="mx-5 mt-3 border-t border-[#d5dde4]" />
+
+            <div className="flex-1 overflow-y-auto px-5 pt-2 text-sm font-medium">
+              <div className="space-y-4">
                 {navItems.map((item) => {
                   const hasSubItems = (item.dropdown?.items?.length ?? 0) > 0
                   const isExpanded = expandedMobileMenus[item.id]
-                  const isHighlighted = Boolean(item.alwaysUnderline)
 
                   return (
-                    <div key={item.id} className="rounded-lg bg-white/5">
+                    <div key={item.id} className="py-2">
                       <button
                         type="button"
                         onClick={() =>
                           hasSubItems ? toggleMobileSubmenu(item.id) : handleNavigation(item.href)
                         }
-                        className={cn(
-                          "flex w-full items-center justify-between px-4 py-4 text-left text-base font-semibold tracking-wide transition",
-                          hasSubItems ? "" : "pr-6",
-                          isExpanded ? "bg-white/10" : "",
-                        )}
+                        className="flex w-full items-center justify-between text-left tracking-[0.04em]"
                       >
-                        <span className="flex items-center gap-2">
-                          {isHighlighted ? (
-                            <span className="h-2 w-2 rounded-full bg-[#ec561b]" aria-hidden />
-                          ) : null}
-                          <span>{item.label}</span>
-                        </span>
+                        <span>{item.label}</span>
                         {hasSubItems ? (
                           <ChevronRight
                             className={cn(
-                              "h-5 w-5 text-white/80 transition-transform",
+                              "h-5 w-5 text-[#3f3a39] transition-transform",
                               isExpanded ? "rotate-90" : "",
                             )}
                           />
@@ -461,89 +514,56 @@ export function HeaderWithMenu({ title, showBackButton = true, onBack }: HeaderW
                       {hasSubItems ? (
                         <div
                           className={cn(
-                            "overflow-hidden bg-white/10 transition-[max-height]",
+                            "overflow-hidden pl-3 transition-[max-height]",
                             isExpanded
                               ? "max-h-96 duration-[800ms] ease-in-out"
                               : "max-h-0 duration-[300ms] ease-out",
                           )}
                         >
-                          {item.dropdown?.items?.map((subItem, index) => (
-                            <button
-                              key={`${item.id}-mobile-${index}`}
-                              type="button"
-                              onClick={() => handleNavigation(subItem.href)}
-                              className="flex w-full flex-col items-center gap-1 border-t border-white/10 px-5 py-3 text-center text-sm font-medium text-white transition hover:bg-white/20"
-                            >
-                              {subItem.lines.map((line, lineIndex) => (
-                                <span
-                                  key={`${item.id}-mobile-${index}-${lineIndex}`}
-                                  className={cn(
-                                    "leading-snug",
-                                    lineIndex === 0 ? "text-base tracking-[0.08em]" : "text-xs text-white/80",
-                                  )}
-                                >
-                                  {line}
-                                </span>
-                              ))}
-                            </button>
-                          ))}
+                          <div className="mt-3 space-y-2 rounded-[12px] bg-[#f4f9fb] p-3 text-sm">
+                            {item.dropdown?.items?.map((subItem, index) => (
+                              <button
+                                key={`${item.id}-mobile-${index}`}
+                                type="button"
+                                onClick={() => handleNavigation(subItem.href)}
+                                className="flex w-full flex-col items-start rounded-[8px] px-3 py-2 text-left text-[#0f859d] transition hover:bg-white"
+                              >
+                                {subItem.lines.map((line, lineIndex) => (
+                                  <span
+                                    key={`${item.id}-mobile-${index}-${lineIndex}`}
+                                    className={cn(
+                                      lineIndex === 0 ? "font-semibold" : "text-xs text-[#6b7a8c]",
+                                    )}
+                                  >
+                                    {line}
+                                  </span>
+                                ))}
+                              </button>
+                            ))}
+                          </div>
                         </div>
                       ) : null}
                     </div>
                   )
                 })}
               </div>
-
-              <div className="mt-6 rounded-lg bg-white/10 px-4 py-5">
-                <div className="flex items-center gap-3">
-                  <UserRound className="h-5 w-5 text-white" />
-                  <span className="text-sm font-semibold">會員中心</span>
-                </div>
-                <div className="mt-4 grid grid-cols-2 gap-3">
-                  <button
-                    type="button"
-                    className="rounded-full border border-white/30 py-2 text-sm font-semibold tracking-wide text-white transition hover:bg-white/10"
-                    onClick={() => {
-                      setIsLoggedIn(true)
-                      toggleMobileMenu()
-                    }}
-                  >
-                    會員登入
-                  </button>
-                  <button
-                    type="button"
-                    className="rounded-full border border-white/30 py-2 text-sm font-semibold tracking-wide text-white transition hover:bg-white/10"
-                    onClick={() => {
-                      toggleMobileMenu()
-                      router.push("/register")
-                    }}
-                  >
-                    立即註冊
-                  </button>
-                </div>
-              </div>
-
-              <div className="mt-4 rounded-lg bg-white/10 px-4 py-5">
-                <div className="text-sm font-semibold text-white">語系切換</div>
-                <div className="mt-3 grid grid-cols-3 gap-2">
-                  {Object.entries(languageOptions).map(([value, label]) => (
-                    <button
-                      key={value}
-                      type="button"
-                      onClick={() => handleLanguageChange(value as LanguageCode)}
-                      className={cn(
-                        "rounded-full border px-3 py-2 text-sm font-semibold transition",
-                        currentLanguage === value
-                          ? "border-white bg-white/20 text-white"
-                          : "border-white/30 text-white/80 hover:border-white hover:text-white",
-                      )}
-                    >
-                      {label}
-                    </button>
-                  ))}
-                </div>
-              </div>
             </div>
+
+            <button
+              type="button"
+              onClick={() => {
+                setIsLoggedIn((prev) => !prev)
+                toggleMobileMenu()
+              }}
+              className="mt-auto flex items-center justify-center gap-3 bg-[#0c90af] py-5 text-sm font-semibold text-white transition hover:bg-[#0f9fc2]"
+            >
+              <img
+                src="/images/icons/top_login.png"
+                alt="登入"
+                className="h-4 w-4 object-contain"
+              />
+              <span>{isLoggedIn ? "登出" : "登入"}</span>
+            </button>
           </div>
         </div>
       ) : null}
