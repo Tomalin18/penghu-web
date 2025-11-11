@@ -212,12 +212,12 @@ export function HeaderWithMenu({ title }: HeaderWithMenuProps) {
   return (
     <>
       <header className="fixed inset-x-0 top-0 z-50 flex justify-center bg-white shadow-sm">
-        <div className="hidden xl:flex h-[60px] w-[1280px] items-center justify-between px-6">
+        <div className="hidden xl:flex h-[80px] w-[1280px] items-center justify-between px-6">
           <Link href="/" className="flex items-center gap-3">
             <img
               src="/images/penghu-logo.png"
               alt="Like 澎湖 - 台灣好行"
-              className="h-[60px] w-auto object-contain"
+              className="h-[77.25px] w-auto object-contain"
             />
           </Link>
 
@@ -266,14 +266,16 @@ export function HeaderWithMenu({ title }: HeaderWithMenuProps) {
                     onClick={() => handleNavigation(item.href)}
                     // 確保字級與橫向間距貼近舊版電腦版設計，維持 16px 字級與 30px 水平內距。
                     className={cn(
-                      "group relative flex h-full w-full items-center justify-center px-[18px] text-[16px] font-semibold tracking-[0.1em] text-[#222222] transition-colors",
-                      allowHoverColor ? "hover:text-[#ec561b]" : "",
+                      "group relative flex h-full w-[110px] items-center justify-center px-[18px] text-[16px] font-[500] tracking-[0.1em] text-[#222222] transition-colors",
+                      underlineActive
+                        ? "font-[700]"
+                        : allowHoverColor ? "hover:text-[#ec561b]" : "",
                     )}
                   >
                     <span className="pointer-events-none">{item.label}</span>
                     <span
                       className={cn(
-                        "pointer-events-none absolute bottom-4 left-1/2 h-[3px] w-[60%] -translate-x-1/2 transition-colors",
+                        "pointer-events-none absolute bottom-6 left-1/2 h-[3px] w-[70%] -translate-x-1/2 transition-colors",
                         underlineActive
                           ? "bg-[#ec561b]"
                           : allowHoverUnderline
@@ -365,7 +367,7 @@ export function HeaderWithMenu({ title }: HeaderWithMenuProps) {
             </div>
             <span className="mx-2 h-4 w-px bg-white/40" />
             <div
-              className="relative flex h-full min-w-[70px] cursor-pointer items-center justify-center px-2 transition hover:bg-white/10"
+              className="relative flex h-full min-w-[70px] cursor-pointer items-center justify-center px-2 transition hover:bg-[#00BA99]"
               onMouseEnter={() => setLanguageOpen(true)}
               onMouseLeave={() => setLanguageOpen(false)}
               onClick={() => setLanguageOpen((prev) => !prev)}
@@ -432,7 +434,7 @@ export function HeaderWithMenu({ title }: HeaderWithMenuProps) {
                 <img
                   src="/images/penghu-logo.png"
                   alt="Like 澎湖 - 台灣好行"
-                  className="h-[60px] w-auto object-contain"
+                  className="h-[68.45px] w-auto object-contain"
                 />
               </Link>
             )}
@@ -470,8 +472,8 @@ export function HeaderWithMenu({ title }: HeaderWithMenuProps) {
                     className={cn(
                       "flex-1 rounded-[6px] px-0 py-[6px] text-white transition",
                       currentLanguage === value
-                        ? "bg-[#0f859d]"
-                        : "bg-[#0c90af] hover:bg-[#11a6c8]",
+                        ? "bg-[#00BA99]"
+                        : "bg-[#1690aa] hover:bg-[#1690aa]",
                     )}
                   >
                     {label}
@@ -483,7 +485,7 @@ export function HeaderWithMenu({ title }: HeaderWithMenuProps) {
             <div className="mt-4 px-5 pt-2 text-sm font-semibold">
               <span className="tracking-[0.3em] text-[#191d63]">MENU</span>
             </div>
-            <div className="mx-5 mt-3 border-t border-[#d5dde4]" />
+            <div className="mt-3 border-t border-[#CCC]" />
 
             <div className="flex-1 overflow-y-auto text-sm font-medium">
               <div>
@@ -507,7 +509,7 @@ export function HeaderWithMenu({ title }: HeaderWithMenuProps) {
                           <ChevronRight
                             className={cn(
                               "h-5 w-5 transition-transform",
-                              isExpanded ? "rotate-90 text-[#ffffff]" : "text-[#3f3a39]",
+                              isExpanded ? "rotate-90 text-black" : "text-[#3f3a39]",
                             )}
                           />
                         ) : null}
@@ -529,7 +531,7 @@ export function HeaderWithMenu({ title }: HeaderWithMenuProps) {
                                   key={`${item.id}-mobile-${index}`}
                                   type="button"
                                   onClick={() => handleNavigation(subItem.href)}
-                                  className="flex w-full flex-col items-start rounded-[8px] px-[25px] py-[7px] transition hover:bg-white"
+                                  className="flex w-full flex-col items-start rounded-[8px] px-[25px] py-[7px] transition"
                                 >
                                   {subItem.lines.map((line, lineIndex) => (
                                     <span
@@ -558,7 +560,7 @@ export function HeaderWithMenu({ title }: HeaderWithMenuProps) {
                 setIsLoggedIn((prev) => !prev)
                 toggleMobileMenu()
               }}
-              className="mt-auto flex items-center justify-center gap-3 bg-[#0c90af] py-5 text-sm font-semibold text-white transition hover:bg-[#0f9fc2]"
+              className="mt-auto flex items-center justify-center bg-[#0c90af] py-3 gap-1 text-[15px] font-[500] text-white transition hover:bg-[#0f9fc2]"
             >
               <img
                 src="/images/icons/top_login.png"
