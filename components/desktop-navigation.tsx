@@ -1,6 +1,6 @@
 "use client"
 
-import { Home, Ticket, CreditCard, Calendar, MessageCircle, Menu, X, Globe } from "lucide-react"
+import { Ticket, CreditCard, Calendar, Menu, X, Globe } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useRouter, usePathname } from "next/navigation"
 import { useState } from "react"
@@ -37,8 +37,8 @@ export function DesktopNavigation({ activeTab = "home" }: DesktopNavigationProps
     ko: "한국어",
   }
 
+  // 依照新版需求移除「官網首頁」，僅保留實際功能頁籤。
   const navItems = [
-    { id: "home", label: "官網首頁", icon: Home, href: "/" },
     { id: "my-tickets", label: "我的車票", icon: Ticket, href: "/my-tickets" },
     { id: "purchase", label: "購票", icon: CreditCard, href: "/purchase/tickets" },
     { id: "reservation", label: "有票劃位", icon: Calendar, href: "/reservation" },
@@ -56,7 +56,7 @@ export function DesktopNavigation({ activeTab = "home" }: DesktopNavigationProps
         return item.id
       }
     }
-    return "home"
+    return ""
   }
 
   const activeNav = getActiveNav()
@@ -83,7 +83,7 @@ export function DesktopNavigation({ activeTab = "home" }: DesktopNavigationProps
                   key={item.id}
                   onClick={() => handleNavigation(item.href)}
                   className={cn(
-                    "flex items-center space-x-2 px-4 py-2 rounded-md text-sm font-medium transition-colors",
+                    "flex items-center space-x-2 px-5 py-3 rounded-md text-[16px] font-medium transition-colors",
                     isActive
                       ? "text-primary bg-primary/10"
                       : "text-muted-foreground hover:text-foreground hover:bg-muted"
@@ -103,7 +103,7 @@ export function DesktopNavigation({ activeTab = "home" }: DesktopNavigationProps
                 <button
                   type="button"
                   className={cn(
-                    "flex items-center space-x-2 px-4 py-2 rounded-md text-sm font-medium transition-colors",
+                    "flex items-center space-x-2 px-5 py-3 rounded-md text-[16px] font-medium transition-colors",
                     "text-muted-foreground hover:text-foreground hover:bg-muted"
                   )}
                 >
@@ -113,19 +113,19 @@ export function DesktopNavigation({ activeTab = "home" }: DesktopNavigationProps
                 </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="!z-[100]">
-                <DropdownMenuItem onClick={() => handleLanguageChange("zh-TW")}>
+                <DropdownMenuItem onClick={() => handleLanguageChange("zh-TW")} className="text-[16px]">
                   {currentLanguage === "zh-TW" && "✓ "}
                   繁體中文
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => handleLanguageChange("en")}>
+                <DropdownMenuItem onClick={() => handleLanguageChange("en")} className="text-[16px]">
                   {currentLanguage === "en" && "✓ "}
                   English
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => handleLanguageChange("ja")}>
+                <DropdownMenuItem onClick={() => handleLanguageChange("ja")} className="text-[16px]">
                   {currentLanguage === "ja" && "✓ "}
                   日本語
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => handleLanguageChange("ko")}>
+                <DropdownMenuItem onClick={() => handleLanguageChange("ko")} className="text-[16px]">
                   {currentLanguage === "ko" && "✓ "}
                   한국어
                 </DropdownMenuItem>
