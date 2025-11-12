@@ -147,6 +147,7 @@ export function HeaderWithMenu({ title }: HeaderWithMenuProps) {
   const [hoveredMenu, setHoveredMenu] = useState<string | null>(null)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [expandedMobileMenus, setExpandedMobileMenus] = useState<Record<string, boolean>>({})
+  const [expandedMobileSubMenu, setExpandedMobileSubMenu] = useState<string | null>(null)
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [languageOpen, setLanguageOpen] = useState(false)
 
@@ -202,12 +203,10 @@ export function HeaderWithMenu({ title }: HeaderWithMenuProps) {
     })
   }
 
-  const toggleMobileSubmenu = (id: string) => {
-    setExpandedMobileMenus((prev) => ({
-      ...prev,
-      [id]: !prev[id],
-    }))
+  const toggleMobileSubmenu = (itemId: string) => {
+    setExpandedMobileSubMenu(prev => prev === itemId ? null : itemId)
   }
+  
 
   return (
     <>
@@ -491,7 +490,7 @@ export function HeaderWithMenu({ title }: HeaderWithMenuProps) {
               <div>
                 {navItems.map((item) => {
                   const hasSubItems = (item.dropdown?.items?.length ?? 0) > 0
-                  const isExpanded = expandedMobileMenus[item.id]
+                  const isSubMenuExpanded = expandedMobileSubMenu === item.id
 
                   return (
                     <div key={item.id}>
@@ -501,7 +500,7 @@ export function HeaderWithMenu({ title }: HeaderWithMenuProps) {
                           hasSubItems ? toggleMobileSubmenu(item.id) : handleNavigation(item.href)
                         }
                         className={cn("flex w-full items-center justify-between text-left tracking-[0.04em] px-[1em]",
-                          isExpanded ? "bg-[#3f3a39] text-white" : "")
+                          isSubMenuExpanded ? "bg-[#3f3a39] text-white" : "")
                         }
                       >
                         <span className="leading-[50px]">{item.label}</span>
@@ -509,7 +508,7 @@ export function HeaderWithMenu({ title }: HeaderWithMenuProps) {
                           <ChevronRight
                             className={cn(
                               "h-5 w-5 transition-transform",
-                              isExpanded ? "rotate-90 text-black" : "text-[#3f3a39]",
+                              isSubMenuExpanded ? "rotate-90 text-black" : "text-[#3f3a39]",
                             )}
                           />
                         ) : null}
@@ -519,7 +518,7 @@ export function HeaderWithMenu({ title }: HeaderWithMenuProps) {
                         <div
                           className={cn(
                             "overflow-hidden transition-[max-height]",
-                            isExpanded
+                            isSubMenuExpanded
                               ? "max-h-96 duration-[800ms] ease-in-out"
                               : "max-h-0 duration-[300ms] ease-out",
                           )}
