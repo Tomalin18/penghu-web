@@ -1319,18 +1319,17 @@ export default function WebMyTicketsPage() {
     <div className="min-h-screen bg-background flex flex-col">
       <HeaderWithMenu />
 
-    <div className="flex flex-1 flex-col pt-[60px] xl:pt-[80px]">
-      <div className="sticky top-[60px] xl:top-[80px] z-40 bg-primary text-primary-foreground shadow -mt-[60px] xl:-mt-[80px]">
-          <div className="mx-auto flex max-w-6xl items-center px-4 sm:px-6 lg:px-8 py-3 gap-3">
+      <div className="flex flex-1 flex-col pt-[60px] xl:pt-[80px]">
+        <header className="bg-primary px-4 sm:px-6 lg:px-8 py-4 -mt-[60px] xl:-mt-[80px]">
+          <div className="max-w-6xl mx-auto flex items-center">
             <PageBackLink
               onClick={() => router.back()}
               className="text-primary-foreground focus-visible:ring-white/80"
               ariaLabel="返回上一頁"
             />
-            <h1 className="flex-1 text-center text-lg font-semibold tracking-wide">我的車票</h1>
-            <span className="h-5 w-5" aria-hidden="true" />
+            <h1 className="flex-1 font-bold text-xl text-primary-foreground text-center">我的車票</h1>
           </div>
-        </div>
+        </header>
 
         <main className="flex-1 px-4 sm:px-6 lg:px-8 max-w-6xl w-full mx-auto">
         {tickets.length === 0 ? (
