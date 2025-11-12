@@ -325,7 +325,7 @@ export function HeaderWithMenu({ title }: HeaderWithMenuProps) {
                             type="button"
                             onClick={() => handleNavigation(subItem.href)}
                             className={cn(
-                              "flex w-full flex-col items-center gap-1 px-6 py-3 text-center text-sm font-semibold text-white transition hover:bg-[#1eacca]",
+                              "flex w-full flex-col items-center py-1 text-center text-white leading-[45px] transition hover:bg-[#1eacca]",
                               isHovered ? "duration-[800ms] ease-in-out" : "duration-[400ms] ease-out",
                             )}
                           >
@@ -333,8 +333,8 @@ export function HeaderWithMenu({ title }: HeaderWithMenuProps) {
                               <span
                                 key={`${item.id}-${index}-${lineIndex}`}
                                 className={cn(
-                                  "leading-snug",
-                                  lineIndex === 0 ? "text-base tracking-[0.05em]" : "text-xs text-white/80",
+                                  "leading-[45px] font-[700] text-[14px]",
+                                  lineIndex === 0 ? "tracking-[0.05em]" : "text-white/80",
                                 )}
                               >
                                 {line}
