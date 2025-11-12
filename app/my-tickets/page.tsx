@@ -1,11 +1,12 @@
 "use client"
 
-import { MapPin, QrCode, Star, Accessibility, ChevronLeft } from "lucide-react"
+import { MapPin, QrCode, Star, Accessibility } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { MobileNavigation } from "@/components/mobile-navigation"
 import HeaderWithMenu from "@/components/header-with-menu"
+import PageBackLink from "@/components/page-back-link"
 import { useIsMobile } from "@/hooks/use-mobile"
 import { useRouter } from "next/navigation"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
@@ -1321,15 +1322,11 @@ export default function WebMyTicketsPage() {
     <div className="flex flex-1 flex-col pt-[60px] xl:pt-[80px]">
       <div className="sticky top-[60px] xl:top-[80px] z-40 bg-primary text-primary-foreground shadow -mt-[60px] xl:-mt-[80px]">
           <div className="mx-auto flex max-w-6xl items-center px-4 sm:px-6 lg:px-8 py-3 gap-3">
-            <button
-              type="button"
+            <PageBackLink
               onClick={() => router.back()}
-              className="inline-flex items-center gap-1 text-sm font-medium transition hover:text-primary-foreground/80"
-              aria-label="返回上一頁"
-            >
-              <ChevronLeft className="h-5 w-5" />
-              <span>返回</span>
-            </button>
+              className="text-primary-foreground focus-visible:ring-white/80"
+              ariaLabel="返回上一頁"
+            />
             <h1 className="flex-1 text-center text-lg font-semibold tracking-wide">我的車票</h1>
             <span className="h-5 w-5" aria-hidden="true" />
           </div>
