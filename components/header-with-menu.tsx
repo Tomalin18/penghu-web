@@ -65,7 +65,8 @@ const navItems: NavItem[] = [
   {
     id: "traffic",
     label: "交通資訊",
-    href: "#traffic",
+    // 更新為官方交通資訊外部連結
+    href: "https://dev.penghutrip.ewebs.tw/penghufuneasy/index.php?action=traffic",
     dropdown: {
       items: [
         { href: "#public-transport", lines: ["大眾運輸"] },
@@ -76,7 +77,8 @@ const navItems: NavItem[] = [
   {
     id: "search",
     label: "好行好搜",
-    href: "#search",
+    // 更新為官方好行好搜外部連結
+    href: "https://dev.penghutrip.ewebs.tw/penghufuneasy/index.php?action=download",
     dropdown: {
       items: [
         { href: "#audio-guide", lines: ["語音導覽"] },
@@ -212,7 +214,10 @@ export function HeaderWithMenu({ title }: HeaderWithMenuProps) {
     <>
       <header className="fixed inset-x-0 top-0 z-50 flex justify-center bg-white shadow-sm">
         <div className="hidden xl:flex h-[80px] w-[1280px] items-center justify-between px-6">
-          <Link href="/" className="flex items-center gap-3">
+          <Link
+            href="https://dev.penghutrip.ewebs.tw/penghufuneasy/#"
+            className="flex items-center gap-3"
+          >
             <img
               src="/images/penghu-logo.png"
               alt="Like 澎湖 - 台灣好行"
@@ -429,7 +434,10 @@ export function HeaderWithMenu({ title }: HeaderWithMenuProps) {
             {title ? (
               <h1 className="text-base font-semibold tracking-wide text-slate-700">{title}</h1>
             ) : (
-              <Link href="/" className="flex items-center">
+              <Link
+                href="https://dev.penghutrip.ewebs.tw/penghufuneasy/#"
+                className="flex items-center"
+              >
                 <img
                   src="/images/penghu-logo.png"
                   alt="Like 澎湖 - 台灣好行"
