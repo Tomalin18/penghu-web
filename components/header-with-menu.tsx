@@ -147,6 +147,7 @@ export function HeaderWithMenu({ title }: HeaderWithMenuProps) {
   const [hoveredMenu, setHoveredMenu] = useState<string | null>(null)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [expandedMobileMenus, setExpandedMobileMenus] = useState<Record<string, boolean>>({})
+  const [expandedMobileSubMenu, setExpandedMobileSubMenu] = useState<string | null>(null)
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [languageOpen, setLanguageOpen] = useState(false)
 
@@ -202,12 +203,10 @@ export function HeaderWithMenu({ title }: HeaderWithMenuProps) {
     })
   }
 
-  const toggleMobileSubmenu = (id: string) => {
-    setExpandedMobileMenus((prev) => ({
-      ...prev,
-      [id]: !prev[id],
-    }))
+  const toggleMobileSubmenu = (itemId: string) => {
+    setExpandedMobileSubMenu(prev => prev === itemId ? null : itemId)
   }
+  
 
   return (
     <>
@@ -325,7 +324,7 @@ export function HeaderWithMenu({ title }: HeaderWithMenuProps) {
                             type="button"
                             onClick={() => handleNavigation(subItem.href)}
                             className={cn(
-                              "flex w-full flex-col items-center gap-1 px-6 py-3 text-center text-sm font-semibold text-white transition hover:bg-[#1eacca]",
+                              "flex w-full flex-col items-center py-1 text-center text-white leading-[45px] transition hover:bg-[#1eacca]",
                               isHovered ? "duration-[800ms] ease-in-out" : "duration-[400ms] ease-out",
                             )}
                           >
@@ -333,8 +332,8 @@ export function HeaderWithMenu({ title }: HeaderWithMenuProps) {
                               <span
                                 key={`${item.id}-${index}-${lineIndex}`}
                                 className={cn(
-                                  "leading-snug",
-                                  lineIndex === 0 ? "text-base tracking-[0.05em]" : "text-xs text-white/80",
+                                  "leading-[45px] font-[700] text-[14px]",
+                                  lineIndex === 0 ? "tracking-[0.05em]" : "text-white/80",
                                 )}
                               >
                                 {line}
@@ -491,7 +490,7 @@ export function HeaderWithMenu({ title }: HeaderWithMenuProps) {
               <div>
                 {navItems.map((item) => {
                   const hasSubItems = (item.dropdown?.items?.length ?? 0) > 0
-                  const isExpanded = expandedMobileMenus[item.id]
+                  const isSubMenuExpanded = expandedMobileSubMenu === item.id
 
                   return (
                     <div key={item.id}>
@@ -501,7 +500,7 @@ export function HeaderWithMenu({ title }: HeaderWithMenuProps) {
                           hasSubItems ? toggleMobileSubmenu(item.id) : handleNavigation(item.href)
                         }
                         className={cn("flex w-full items-center justify-between text-left tracking-[0.04em] px-[1em]",
-                          isExpanded ? "bg-[#3f3a39] text-white" : "")
+                          isSubMenuExpanded ? "bg-[#3f3a39] text-white" : "")
                         }
                       >
                         <span className="leading-[50px]">{item.label}</span>
@@ -509,7 +508,7 @@ export function HeaderWithMenu({ title }: HeaderWithMenuProps) {
                           <ChevronRight
                             className={cn(
                               "h-5 w-5 transition-transform",
-                              isExpanded ? "rotate-90 text-black" : "text-[#3f3a39]",
+                              isSubMenuExpanded ? "rotate-90 text-black" : "text-[#3f3a39]",
                             )}
                           />
                         ) : null}
@@ -519,7 +518,7 @@ export function HeaderWithMenu({ title }: HeaderWithMenuProps) {
                         <div
                           className={cn(
                             "overflow-hidden transition-[max-height]",
-                            isExpanded
+                            isSubMenuExpanded
                               ? "max-h-96 duration-[800ms] ease-in-out"
                               : "max-h-0 duration-[300ms] ease-out",
                           )}

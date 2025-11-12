@@ -1322,7 +1322,7 @@ export default function WebMyTicketsPage() {
         </div>
       </header>
 
-      <main className={`flex-1 px-4 sm:px-6 lg:px-8 pt-16 max-w-6xl mx-auto`}>
+      <main className={`flex-1 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto`}>
         {tickets.length === 0 ? (
           <div className="text-center py-12">
             <div className="w-20 h-20 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">

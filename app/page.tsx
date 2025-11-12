@@ -135,7 +135,7 @@ const HomePage = () => {
   return (
     <div className="min-h-screen bg-background pb-20">
       {/* Main Content */}
-      <main className="max-w-md mx-auto pt-16">
+      <main className="max-w-md mx-auto">
         <div className="relative">
           <Carousel
             opts={{ loop: true }}
