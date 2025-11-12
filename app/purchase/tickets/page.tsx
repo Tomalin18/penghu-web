@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react"
 import { Card, CardContent } from "@/components/ui/card"
 import { TicketTypeSelector } from "@/components/ticket-type-selector"
-import Link from "next/link"
+import PageBackLink from "@/components/page-back-link"
 import { useRouter, useSearchParams } from "next/navigation"
 
 export default function WebTicketPurchasePage() {
@@ -118,9 +118,7 @@ export default function WebTicketPurchasePage() {
       
       <header className="bg-primary px-4 sm:px-6 lg:px-8 py-4">
         <div className="max-w-6xl mx-auto flex items-center">
-          <Link href="/" className="text-primary-foreground">
-            <span className="text-lg">←</span>
-          </Link>
+          <PageBackLink className="text-primary-foreground focus-visible:ring-white/80" />
           <h1 className="flex-1 font-bold text-xl text-primary-foreground text-center">購票 - 選擇票券</h1>
         </div>
       </header>

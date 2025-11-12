@@ -1,11 +1,12 @@
 "use client"
 
 import { useState, useRef } from "react"
-import { ArrowLeft, Store, Bus, Plane } from "lucide-react"
+import { Store, Bus, Plane } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import Link from "next/link"
+import PageBackLink from "@/components/page-back-link"
 
 export default function WebReservationPage() {
   const [selectedChannel, setSelectedChannel] = useState<string>("")
@@ -92,9 +93,7 @@ export default function WebReservationPage() {
       
       <header className="bg-primary px-4 sm:px-6 lg:px-8 py-4">
         <div className="max-w-6xl mx-auto flex items-center">
-          <Link href="/" className="text-primary-foreground">
-            <ArrowLeft className="h-6 w-6" />
-          </Link>
+          <PageBackLink className="text-primary-foreground focus-visible:ring-white/80" />
           <h1 className="flex-1 font-bold text-xl text-primary-foreground text-center">劃位</h1>
         </div>
       </header>
