@@ -1,10 +1,11 @@
 "use client"
 
-import { MapPin, QrCode, Star, Accessibility } from "lucide-react"
+import { MapPin, QrCode, Star, Accessibility, ChevronLeft } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { MobileNavigation } from "@/components/mobile-navigation"
+import HeaderWithMenu from "@/components/header-with-menu"
 import { useIsMobile } from "@/hooks/use-mobile"
 import { useRouter } from "next/navigation"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
@@ -1315,14 +1316,26 @@ export default function WebMyTicketsPage() {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      
-      <header className="md:hidden fixed top-0 left-0 right-0 bg-primary px-4 py-4 z-50">
-        <div className="max-w-6xl mx-auto flex items-center">
-          <h1 className="flex-1 font-bold text-xl text-primary-foreground text-center">我的車票</h1>
-        </div>
-      </header>
+      <HeaderWithMenu />
 
-      <main className={`flex-1 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto`}>
+    <div className="flex flex-1 flex-col pt-[60px] xl:pt-[80px]">
+      <div className="sticky top-[60px] xl:top-[80px] z-40 bg-primary text-primary-foreground shadow -mt-[60px] xl:-mt-[80px]">
+          <div className="mx-auto flex max-w-6xl items-center px-4 sm:px-6 lg:px-8 py-3 gap-3">
+            <button
+              type="button"
+              onClick={() => router.back()}
+              className="inline-flex items-center gap-1 text-sm font-medium transition hover:text-primary-foreground/80"
+              aria-label="返回上一頁"
+            >
+              <ChevronLeft className="h-5 w-5" />
+              <span>返回</span>
+            </button>
+            <h1 className="flex-1 text-center text-lg font-semibold tracking-wide">我的車票</h1>
+            <span className="h-5 w-5" aria-hidden="true" />
+          </div>
+        </div>
+
+        <main className="flex-1 px-4 sm:px-6 lg:px-8 max-w-6xl w-full mx-auto">
         {tickets.length === 0 ? (
           <div className="text-center py-12">
             <div className="w-20 h-20 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
@@ -1346,22 +1359,25 @@ export default function WebMyTicketsPage() {
             </div>
           </>
         )}
-      </main>
+        </main>
 
-      {/* Bottom Button - Sticky */}
-      {tickets.length > 0 && (
-        <div className="sticky bottom-0 z-40 bg-background/95 backdrop-blur-sm border-t">
-          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-            <Button
-              size="lg"
-              className="w-full h-12 text-base font-semibold bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl"
-              onClick={() => router.push("/purchase/tickets")}
-            >
-              購買更多票券
-            </Button>
+        {/* Bottom Button - Sticky */}
+        {tickets.length > 0 && (
+          <div className="sticky bottom-0 z-40 bg-background/95 backdrop-blur-sm border-t">
+            <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+              <Button
+                size="lg"
+                className="w-full h-12 text-base font-semibold bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl"
+                onClick={() => router.push("/purchase/tickets")}
+              >
+                購買更多票券
+              </Button>
+            </div>
           </div>
-        </div>
-      )}
+        )}
+
+        {isMobile && <MobileNavigation activeTab="my-tickets" />}
+      </div>
 
       {RatingDialog()}
 
@@ -1382,8 +1398,6 @@ export default function WebMyTicketsPage() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-
-      {isMobile && <MobileNavigation activeTab="my-tickets" />}
     </div>
   )
 }

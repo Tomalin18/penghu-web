@@ -104,6 +104,8 @@ const navItems: NavItem[] = [
 
 type LanguageCode = "zh-TW" | "en" | "ko" | "ja" | "zh-CN"
 
+const MOBILE_DIRECT_NAV_IDS = new Set(["reservation", "traffic", "search"])
+
 const languageOptions: Record<LanguageCode, string> = {
   "zh-TW": "繁",
   en: "EN",
@@ -499,31 +501,70 @@ export function HeaderWithMenu({ title }: HeaderWithMenuProps) {
                 {navItems.map((item) => {
                   const hasSubItems = (item.dropdown?.items?.length ?? 0) > 0
                   const isSubMenuExpanded = expandedMobileSubMenu === item.id
+                  const hasDedicatedToggle = hasSubItems && MOBILE_DIRECT_NAV_IDS.has(item.id)
+                  const subMenuId = `mobile-submenu-${item.id}`
 
                   return (
                     <div key={item.id}>
-                      <button
-                        type="button"
-                        onClick={() =>
-                          hasSubItems ? toggleMobileSubmenu(item.id) : handleNavigation(item.href)
-                        }
-                        className={cn("flex w-full items-center justify-between text-left tracking-[0.04em] px-[1em]",
-                          isSubMenuExpanded ? "bg-[#3f3a39] text-white" : "")
-                        }
-                      >
-                        <span className="leading-[50px]">{item.label}</span>
-                        {hasSubItems ? (
-                          <ChevronRight
+                      {hasDedicatedToggle ? (
+                        <div className="flex w-full items-stretch">
+                          <button
+                            type="button"
+                            onClick={() => handleNavigation(item.href)}
                             className={cn(
-                              "h-5 w-5 transition-transform",
-                              isSubMenuExpanded ? "rotate-90 text-black" : "text-[#3f3a39]",
+                              "flex h-[50px] flex-1 items-center text-left tracking-[0.04em] px-[1em]",
+                              isSubMenuExpanded ? "bg-[#3f3a39] text-white" : "text-[#3f3a39]",
                             )}
-                          />
-                        ) : null}
-                      </button>
+                          >
+                            <span className="leading-[50px]">{item.label}</span>
+                          </button>
+                          <button
+                            type="button"
+                            aria-label={isSubMenuExpanded ? "收合子選單" : "展開子選單"}
+                            aria-expanded={isSubMenuExpanded}
+                            aria-controls={subMenuId}
+                            onClick={() => toggleMobileSubmenu(item.id)}
+                            className={cn(
+                              "flex h-[50px] w-[50px] items-center justify-center transition-colors",
+                              isSubMenuExpanded ? "bg-[#3f3a39] text-white" : "text-[#3f3a39]",
+                            )}
+                          >
+                            <ChevronRight
+                              className={cn(
+                                "h-5 w-5 transition-transform",
+                                isSubMenuExpanded ? "rotate-90 text-white" : "",
+                              )}
+                            />
+                          </button>
+                        </div>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() =>
+                            hasSubItems ? toggleMobileSubmenu(item.id) : handleNavigation(item.href)
+                          }
+                          aria-expanded={hasSubItems ? isSubMenuExpanded : undefined}
+                          aria-controls={hasSubItems ? subMenuId : undefined}
+                          className={cn(
+                            "flex w-full items-center justify-between text-left tracking-[0.04em] px-[1em]",
+                            isSubMenuExpanded ? "bg-[#3f3a39] text-white" : "text-[#3f3a39]",
+                          )}
+                        >
+                          <span className="leading-[50px]">{item.label}</span>
+                          {hasSubItems ? (
+                            <ChevronRight
+                              className={cn(
+                                "h-5 w-5 transition-transform",
+                                isSubMenuExpanded ? "rotate-90 text-black" : "text-[#3f3a39]",
+                              )}
+                            />
+                          ) : null}
+                        </button>
+                      )}
 
                       {hasSubItems ? (
                         <div
+                          id={subMenuId}
                           className={cn(
                             "overflow-hidden transition-[max-height]",
                             isSubMenuExpanded
