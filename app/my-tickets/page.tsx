@@ -8,6 +8,7 @@ import { MobileNavigation } from "@/components/mobile-navigation"
 import HeaderWithMenu from "@/components/header-with-menu"
 import PageBackLink from "@/components/page-back-link"
 import { TicketStatusFilter } from "@/components/ticket-status-filter"
+import { TicketSlider, type TicketSliderItem } from "@/components/ui/ticket-slider"
 import { useIsMobile } from "@/hooks/use-mobile"
 import { useRouter } from "next/navigation"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
@@ -851,22 +852,73 @@ export default function WebMyTicketsPage() {
     return station ? station.label : stationId
   }
 
-  const TicketInfoDisplay = ({ ticket, showQRCode = true }: { ticket: StoredTicket; showQRCode?: boolean }) => (
-    <div className="space-y-4">
-      {/* QR Code */}
-      {showQRCode && (
-        <div className="flex flex-col items-center pb-4 border-b border-border">
-          <div className="bg-white p-4 rounded-lg border-2 border-gray-200">
-            <div className="w-48 h-48 bg-gray-100 flex items-center justify-center rounded">
-              <div className="text-center">
-                <QrCode className="h-16 w-16 mx-auto mb-2 text-gray-400" />
-                <div className="text-xs text-gray-500">QR Code</div>
-                <div className="text-xs text-gray-400 mt-1">{ticket.id}</div>
+  const TicketInfoDisplay = ({ ticket, showQRCode = true }: { ticket: StoredTicket; showQRCode?: boolean }) => {
+    const ticketSlides =
+      ticket.passengers && ticket.passengers.length > 0
+        ? ticket.passengers
+        : Array.from({ length: ticket.quantity }).map((_, index) => ({
+            ticketType: "",
+            name: "",
+            ticketSerial: "",
+            __fallbackIndex: index + 1,
+          }))
+
+    const hasMultipleTickets = ticketSlides.length > 1
+
+    const sliderItems: TicketSliderItem[] = hasMultipleTickets
+      ? ticketSlides.map((passenger: any, index: number) => {
+          const slideId =
+            passenger.ticketSerial ??
+            (passenger.__fallbackIndex ? `${ticket.id}-${passenger.__fallbackIndex}` : `${ticket.id}-${index + 1}`)
+
+          return {
+            id: slideId,
+            content: (
+              <div className="w-[240px] mx-auto flex flex-col items-center space-y-3">
+                <div className="bg-white p-4 rounded-lg border-2 border-gray-200 shadow-sm">
+                  <div className="w-48 h-48 bg-gray-100 flex items-center justify-center rounded">
+                    <div className="text-center">
+                      <QrCode className="h-16 w-16 mx-auto mb-2 text-gray-400" />
+                      <div className="text-xs text-gray-500">QR Code</div>
+                      <div className="text-xs text-gray-400 mt-1 truncate max-w-[10rem]">{slideId}</div>
+                    </div>
+                  </div>
+                </div>
+                <div className="text-center space-y-1">
+                  <p className="text-xs font-medium text-muted-foreground">
+                    第 {index + 1} 張／共 {ticketSlides.length} 張
+                  </p>
+                  {passenger.name && <p className="text-xs text-muted-foreground">乘客：{passenger.name}</p>}
+                  {passenger.ticketType && (
+                    <p className="text-xs text-muted-foreground">票種：{getTicketTypeLabel(passenger.ticketType)}</p>
+                  )}
+                </div>
               </div>
-            </div>
+            ),
+          }
+        })
+      : []
+
+    return (
+      <div className="space-y-4">
+        {/* QR Code */}
+        {showQRCode && (
+          <div className="flex flex-col items-center pb-4 border-b border-border">
+            {hasMultipleTickets ? (
+              <TicketSlider items={sliderItems} peek={48} gap={24} className="w-full max-w-xs" />
+            ) : (
+              <div className="bg-white p-4 rounded-lg border-2 border-gray-200">
+                <div className="w-48 h-48 bg-gray-100 flex items-center justify-center rounded">
+                  <div className="text-center">
+                    <QrCode className="h-16 w-16 mx-auto mb-2 text-gray-400" />
+                    <div className="text-xs text-gray-500">QR Code</div>
+                    <div className="text-xs text-gray-400 mt-1">{ticket.id}</div>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
-        </div>
-      )}
+        )}
 
       {/* 票券基本資訊 */}
       <div className="flex justify-between items-start mb-4">
@@ -1073,7 +1125,8 @@ export default function WebMyTicketsPage() {
       </div>
 
     </div>
-  )
+    )
+  }
 
   const getTicketStatus = (ticket: StoredTicket) => {
     // 單純根據票券的固定狀態判斷，不考慮日期
