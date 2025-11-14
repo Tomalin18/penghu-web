@@ -297,7 +297,7 @@ export function HeaderWithMenu({ title }: HeaderWithMenuProps) {
                         "pointer-events-none absolute -bottom-[1px] left-1/2 flex -translate-x-1/2 flex-col items-center text-[#1690aa] transition-all",
                         isHovered
                           ? "duration-[800ms] ease-in-out translate-y-0 opacity-100"
-                          : "duration-[400ms] ease-out translate-y-2 opacity-0",
+                          : "duration-[600ms] ease-out translate-y-2 opacity-0",
                       )}
                     >
                       <span className="h-2.5 w-2.5 rounded-full border-2 border-white bg-[#1690aa]" />
@@ -322,7 +322,7 @@ export function HeaderWithMenu({ title }: HeaderWithMenuProps) {
                           "overflow-hidden bg-[#1690aa] text-white shadow-[0_12px_24px_rgba(0,0,0,0.18)] transition-[max-height]",
                           isHovered
                             ? "max-h-96 duration-[800ms] ease-in-out"
-                            : "max-h-0 duration-[400ms] ease-out",
+                            : "max-h-0 duration-[600ms] ease-out",
                         )}
                       >
                         {dropdown?.items?.map((subItem, index) => (
@@ -332,7 +332,7 @@ export function HeaderWithMenu({ title }: HeaderWithMenuProps) {
                             onClick={() => handleNavigation(subItem.href)}
                             className={cn(
                               "flex w-full flex-col items-center py-1 text-center text-white leading-[45px] transition hover:bg-[#1eacca]",
-                              isHovered ? "duration-[800ms] ease-in-out" : "duration-[400ms] ease-out",
+                              isHovered ? "duration-[600ms] ease-in-out" : "duration-[600ms] ease-out",
                             )}
                           >
                             {subItem.lines.map((line, lineIndex) => (

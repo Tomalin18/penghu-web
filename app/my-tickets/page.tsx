@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge"
 import { MobileNavigation } from "@/components/mobile-navigation"
 import HeaderWithMenu from "@/components/header-with-menu"
 import PageBackLink from "@/components/page-back-link"
+import { TicketStatusFilter } from "@/components/ticket-status-filter"
 import { useIsMobile } from "@/hooks/use-mobile"
 import { useRouter } from "next/navigation"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
@@ -45,6 +46,7 @@ export default function WebMyTicketsPage() {
   const [comment, setComment] = useState("")
   const [tickets, setTickets] = useState<StoredTicket[]>([])
   const [isLoading, setIsLoading] = useState(true)
+  const [selectedStatus, setSelectedStatus] = useState<string>("已劃位")
 
   useEffect(() => {
     const loadedTickets = getTickets()
@@ -1092,6 +1094,26 @@ export default function WebMyTicketsPage() {
     return { label: "已劃位", variant: "default" as const, className: "" }
   }
 
+  const getTicketStatusLabel = (ticket: StoredTicket): string => {
+    if (ticket.status === "cancelled") {
+      return "已取消"
+    }
+    if (ticket.status === "completed") {
+      return "已搭乘"
+    }
+    if (!ticket.seatAssigned) {
+      return "未劃位"
+    }
+    return "已劃位"
+  }
+
+  const filteredTickets = tickets.filter((ticket) => {
+    if (selectedStatus === "全部") {
+      return true
+    }
+    return getTicketStatusLabel(ticket) === selectedStatus
+  })
+
   const TicketCard = ({ ticket }: { ticket: StoredTicket }) => {
     const isPastTicket = new Date(ticket.date) < new Date()
     const status = getTicketStatus(ticket)
@@ -1101,48 +1123,50 @@ export default function WebMyTicketsPage() {
     const needsLowFloorBus = ticket.passengers?.some((p) => p.needsAccessibility === "yes")
 
     return (
-      <Card className="shadow-sm border-l-4 border-l-primary">
-        <CardContent className="px-3 py-1">
-          <div className="flex justify-between items-start mb-1">
-            <div className="flex-1">
-              <h3 className="font-semibold text-foreground text-sm mb-1">{ticket.name}</h3>
-              <div className="flex items-center text-xs text-muted-foreground mb-2">
-                <MapPin className="h-3 w-3 mr-1" />
-                {ticket.routeName}
-                {ticket.type === "一日券" && (
-                  <span className="ml-1">搭乘日期：{ticket.date}</span>
+      <Card className="shadow-sm border-l-4 border-l-primary flex flex-col h-full">
+        <CardContent className="px-3 py-1 flex flex-col flex-1">
+          <div className="flex-1">
+            <div className="flex justify-between items-start mb-1">
+              <div className="flex-1">
+                <h3 className="font-semibold text-foreground text-sm mb-1">{ticket.name}</h3>
+                <div className="flex items-center text-xs text-muted-foreground mb-2">
+                  <MapPin className="h-3 w-3 mr-1" />
+                  {ticket.routeName}
+                  {ticket.type === "一日券" && (
+                    <span className="ml-1">搭乘日期：{ticket.date}</span>
+                  )}
+                </div>
+                {needsLowFloorBus && (
+                  <div className="flex items-center gap-1 mt-1">
+                    <Badge variant="outline" className="text-sm bg-blue-50 text-blue-700 border-blue-200">
+                      <Accessibility className="h-3 w-3 mr-1" />
+                      低地板公車
+                    </Badge>
+                  </div>
                 )}
               </div>
-              {needsLowFloorBus && (
-                <div className="flex items-center gap-1 mt-1">
-                  <Badge variant="outline" className="text-sm bg-blue-50 text-blue-700 border-blue-200">
-                    <Accessibility className="h-3 w-3 mr-1" />
-                    低地板公車
-                  </Badge>
-                </div>
-              )}
+              <div className="flex flex-col items-end">
+                <Badge 
+                  variant={status.variant} 
+                  className={`text-xs ${status.className || ''}`}
+                >
+                  {status.label}
+                </Badge>
+              </div>
             </div>
-            <div className="flex flex-col items-end">
-              <Badge 
-                variant={status.variant} 
-                className={`text-xs ${status.className || ''}`}
-              >
-                {status.label}
-              </Badge>
+
+            <div className="flex justify-between items-center mb-1 pl-4 pr-1">
+              <div className="text-xs text-muted-foreground">
+                <div>數量: {ticket.quantity} 張</div>
+                <div>金額: NT${ticket.totalAmount}</div>
+              </div>
+              <div className="text-xs text-muted-foreground text-right">
+                <div>購買: {ticket.purchaseDate}</div>
+              </div>
             </div>
           </div>
 
-          <div className="flex justify-between items-center mb-1 pl-4 pr-1">
-            <div className="text-xs text-muted-foreground">
-              <div>數量: {ticket.quantity} 張</div>
-              <div>金額: NT${ticket.totalAmount}</div>
-            </div>
-            <div className="text-xs text-muted-foreground text-right">
-              <div>購買: {ticket.purchaseDate}</div>
-            </div>
-          </div>
-
-          <div className="flex gap-2">
+          <div className="flex gap-2 mt-auto pt-2">
             {status.label === "已取消" ? (
               // 已取消：車票詳情（不顯示QR碼）
               <Dialog open={isTicketInfoDialogOpen} onOpenChange={setIsTicketInfoDialogOpen}>
@@ -1331,31 +1355,44 @@ export default function WebMyTicketsPage() {
           </div>
         </header>
 
-        <main className="flex-1 px-4 sm:px-6 lg:px-8 max-w-6xl w-full mx-auto">
-        {tickets.length === 0 ? (
+        <div className="flex-1 py-8">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="mb-6">
+              <TicketStatusFilter selectedStatus={selectedStatus} onStatusChange={setSelectedStatus} />
+            </div>
+        {filteredTickets.length === 0 ? (
           <div className="text-center py-12">
             <div className="w-20 h-20 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
               <QrCode className="h-10 w-10 text-muted-foreground" />
             </div>
-            <h3 className="font-semibold text-foreground mb-2">尚無車票</h3>
-            <p className="text-muted-foreground text-sm mb-6">購買票券後，您的車票將顯示在這裡</p>
-            <Button
-              className="bg-primary hover:bg-primary/90 text-primary-foreground"
-              onClick={() => router.push("/purchase/tickets")}
-            >
-              立即購票
-            </Button>
+            <h3 className="font-semibold text-foreground mb-2">
+              {tickets.length === 0 ? "尚無車票" : `尚無「${selectedStatus}」的車票`}
+            </h3>
+            <p className="text-muted-foreground text-sm mb-6">
+              {tickets.length === 0
+                ? "購買票券後，您的車票將顯示在這裡"
+                : "請選擇其他狀態查看車票"}
+            </p>
+            {tickets.length === 0 && (
+              <Button
+                className="bg-primary hover:bg-primary/90 text-primary-foreground"
+                onClick={() => router.push("/purchase/tickets")}
+              >
+                立即購票
+              </Button>
+            )}
           </div>
         ) : (
           <>
             <div className={`${isMobile ? "space-y-3" : "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"}`}>
-              {tickets.map((ticket) => (
+              {filteredTickets.map((ticket) => (
                 <TicketCard key={ticket.id} ticket={ticket} />
               ))}
             </div>
           </>
         )}
-        </main>
+          </div>
+        </div>
 
         {/* Bottom Button - Sticky */}
         {tickets.length > 0 && (
